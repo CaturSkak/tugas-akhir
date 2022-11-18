@@ -1,0 +1,41 @@
+{# Komentar #}
+{% extends "layout/login.html" %} 
+
+{% set title = "Halaman Register - Twig" %} 
+
+{% block content %} 
+
+<div class="container" id="container">
+  <div class="form-container log-in-container">
+    <form action="/from-register" method="POST">
+      <h1>Register</h1>
+     <div class="my-2"></div>
+      <div class="col-12">
+        <input name="firt_name" class="col-6" type="text" placeholder="Nama Depan" />
+        <input name="last_name" class="col-5" type="text" placeholder="Belakang" />
+      </div>
+      
+      <input name="username" type="username" placeholder="Username" />
+      <input name="password" type="password" placeholder="Password" />
+      <a href="/login">Login</a>
+      <button type="submit">Register</button>
+    </form>
+  </div>
+  <div class="overlay-container">
+    <div class="overlay">
+      <div class="overlay-panel overlay-right">
+        <h1>HTML CSS Register Form</h1>
+        <p>This login form is created using pure HTML and CSS. For social icons, FontAwesome is used.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} 
+
+
+
+
+
+
+
