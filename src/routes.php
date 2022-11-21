@@ -3,7 +3,7 @@
 use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\login;
+use App\Controller\AuthContoller;
 
 
 return function (App $app) {
@@ -25,17 +25,17 @@ return function (App $app) {
      $app->get('/login', function (Request $request, Response $response, array $args) use ($container) {
 
         // Render index view
-        return login::index($this, $request, $response,  $args);
+        return AuthContoller::index($this, $request, $response,  $args);
     });
 
      $app->get('/register', function (Request $request, Response $response, array $args) use ($container) {
 
         // Render index view
-        return login::register($this, $request, $response,  $args);
+        return AuthContoller::register($this, $request, $response,  $args);
     });
 
     $app->post('/form-register', function (Request $request, Response $response, array $args) use ($container) {
-        return login::form_register($this, $request, $response,  $args);
+        return AuthContoller::form_register($this, $request, $response,  $args);
     });
 
     

@@ -4,7 +4,7 @@ use Medoo\Medoo;
 // use Middleware\Auth;
 // use PHPUnit\Framework\Constraint\Count;
 
-class login{
+class AuthController{
     //buat function index()
     public static function index($app, $req, $rsp, $args){
 
