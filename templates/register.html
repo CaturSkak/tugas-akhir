@@ -1,41 +1,71 @@
 {# Komentar #}
-{% extends "layout/login.html" %} 
+{% extends "layout/Auth/auth.html" %}
 
-{% set title = "Halaman Register - Twig" %} 
+{% set title = "Halaman Register - Twig" %}
 
-{% block content %} 
+{% block content %}
+{% if hasData == true %}
+<script>
+  Swal.fire({
+    icon: 'error',
+    title: 'Akun Sudah Ada',
+    showConfirmButton: false,
+    timer: 1500
+  })
+</script>
+{% endif %}
 
-<div class="container" id="container">
-  <div class="form-container log-in-container">
-    <form action="/from-register" method="POST">
-      <h1>Register</h1>
-     <div class="my-2"></div>
-      <div class="col-12">
-        <input name="firt_name" class="col-6" type="text" placeholder="Nama Depan" />
-        <input name="last_name" class="col-5" type="text" placeholder="Belakang" />
-      </div>
-      
-      <input name="username" type="username" placeholder="Username" />
-      <input name="password" type="password" placeholder="Password" />
-      <a href="/login">Login</a>
-      <button type="submit">Register</button>
-    </form>
-  </div>
-  <div class="overlay-container">
-    <div class="overlay">
-      <div class="overlay-panel overlay-right">
-        <h1>HTML CSS Register Form</h1>
-        <p>This login form is created using pure HTML and CSS. For social icons, FontAwesome is used.</p>
+<section class=" gradient-custom">
+  <div class="container py-1 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-5 col-lg-6 col-xl-5">
+        <div class="card bg-dark text-white">
+          <div class="card-body  text-center">
+
+            <div class="mb-md-5 mt-md-4 pb-5">
+              <form action="/form-register" method="POST">
+
+                <h2 class="fw-bold mb-2 text-uppercase">Register</h2>
+                <p class="text-white-50 mb-5">Tolong isi form Register!</p>
+
+                <div class="form-outline form-white mb-4">
+                  <input name="first_name" type="text" class="form-control form-control-lg" placeholder="Nama Depan"
+                    required />
+                </div>
+                <div class="form-outline form-white mb-4">
+                  <input name="last_name" type="text" class="form-control form-control-lg" placeholder="Belakang"
+                    required />
+                </div>
+                <div class="form-outline form-white mb-4">
+                  <input name="username" type="username" class="form-control form-control-lg" placeholder="Username"
+                    required />
+                </div>
+                <div class="form-outline form-white mb-4">
+                  <input name="password" type="password" class="form-control form-control-lg" placeholder="Password"
+                    required />
+                </div>
+                <div class="form-outline form-white mb-4">
+
+
+                  <button class="btn btn-light btn-lg px-5" type="submit">Login</button>
+
+                  <p class="mb-0">Sudah memiliki akun? <a href="/login" class="text-white-50 fw-bold">Login</a>
+                  </p>
+                </div>
+              </form>
+
+
+            </div>
+
+
+
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-{% endblock %} 
+</section>
 
 
 
-
-
-
-
+{% endblock %}

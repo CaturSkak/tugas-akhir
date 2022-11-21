@@ -1,12 +1,89 @@
 {# Komentar #}
-{% extends "layout/master.html" %} 
+{% extends "layout/Dashboard/master.html" %} 
 
 {% set title = "Tugas AKhir - Twig" %} 
 
 {% block content %} 
+{% if hasvalidate == true %}
+<script>
+  Swal.fire({
+    icon: 'success',
+    title: 'Kamu berhasil login',
+    showConfirmButton: false,
+    timer: 1500
+  })
+</script>
 
-<h1>Selamat Datang</h1>
+{% endif %}
 
+<section class="section py-5">
+  <div class="container">
+      <div class="row bg-light shadow-lg py-5">
+
+          <div class="col-lg-10 col-12 text-center mx-auto">
+              <h2 class="mb-5">Selamat Datang {{username}} di Slim Framework</h2>
+          </div>
+
+          <div class="col-lg-3 col-md-6 col-12 mb-4 mb-lg-0">
+              <div class=" d-flex justify-content-center align-items-center">
+                  <a>
+                      <img src="img/icons/hands.png" class="-image img-fluid" alt="">
+
+                      <p class="text-center">Menjadi <strong> Progamer</strong></p>
+                  </a>
+              </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6 col-12 mb-4 mb-lg-0 mb-md-4">
+              <div class=" d-flex justify-content-center align-items-center">
+                  <a>
+                      <img src="img/icons/heart.png" class="-image img-fluid" alt="">
+
+                      <p class="text-center"><strong>Penyelamat </strong>Bug</p>
+                  </a>
+              </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6 col-12 mb-4 mb-lg-0 mb-md-4">
+              <div class=" d-flex justify-content-center align-items-center text-center">
+                  <a>
+                      <img src="img/icons/receive.png" class="-image img-fluid" alt="">
+
+                      <p class="text-center">Salurkan <strong>Kemampuan</strong></p>
+                  </a>
+              </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6 col-12 mb-4 mb-lg-0">
+              <div class=" d-flex justify-content-center align-items-center">
+                  <a>
+                      <img src="img/icons/scholarship.png" class="-image img-fluid" alt="">
+
+                      <p class="text-center"><strong>Pendidikan </strong>Informatika</p>
+                  </a>
+              </div>
+          </div>
+
+      </div>
+  </div>
+
+</section>
+
+<section class="section py-5 " id="Data">
+  <div class="container">
+      <div class="row bg-light shadow-lg py-5">
+
+          <div class="col-lg-12 col-12 text-center mb-4">
+              <h2>Data</h2>
+          </div>
+
+          
+
+
+      </div>
+
+  </div>
+</section>
 {% endblock %} 
 
 

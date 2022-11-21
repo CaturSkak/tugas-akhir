@@ -5,7 +5,7 @@ namespace App\Middleware;
 
 class Auth {
     public function __invoke($req, $res, $next){
-        if(!isset($_SESSION['id'])){
+        if(!isset($_SESSION['username'])){
             return $res->withRedirect('/login');
         }
         return $next($req, $res);
@@ -14,7 +14,7 @@ class Auth {
     public static function isLogin(){
         $login = false;
 
-        if(!isset($_SESSION['id'])){
+        if(isset($_SESSION['username'])){
             $login = true;
         }
 

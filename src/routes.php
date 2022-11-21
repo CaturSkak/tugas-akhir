@@ -3,7 +3,11 @@
 use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
-use App\Controller\AuthContoller;
+use App\Middleware\Auth;
+use App\Middleware\isLogin;
+use App\Controller\AuthController;
+use App\Controller\DashboardController;
+
 
 
 return function (App $app) {
@@ -21,21 +25,45 @@ return function (App $app) {
         return $view;
     };
 
-     //Merender menggunakan twig melalui controler
-     $app->get('/login', function (Request $request, Response $response, array $args) use ($container) {
+    $app->get('/', function (Request $request, Response $response, array $args) use ($container) {
 
         // Render index view
-        return AuthContoller::index($this, $request, $response,  $args);
+        return DashboardController::index($this, $request, $response,  $args);
+    })->add(new Auth());
+
+     $app->get('/logout', function (Request $request, Response $response, array $args) use ($container) {
+
+        // Render index view
+        session_destroy();
+        return AuthController::index($this, $request, $response,  $args);
+    });
+     $app->get('/login', function (Request $request, Response $response, array $args) use ($container) {
+        
+        // Render index view
+        return AuthController::index($this, $request, $response,  $args);
+    })->add(new isLogin());
+
+    $app->post('/islogin', function (Request $request, Response $response, array $args) use ($container) {
+        $reg = $request->getParsedBody();
+        // return var_dump($reg);
+        return AuthController::login($this, $request, $response,  [
+            'data'=>$reg
+        ]);
+        // Render index view
     });
 
      $app->get('/register', function (Request $request, Response $response, array $args) use ($container) {
 
         // Render index view
-        return AuthContoller::register($this, $request, $response,  $args);
-    });
+        return AuthController::register($this, $request, $response,  $args);
+    })->add(new isLogin());
 
     $app->post('/form-register', function (Request $request, Response $response, array $args) use ($container) {
-        return AuthContoller::form_register($this, $request, $response,  $args);
+        $reg = $request->getParsedBody();
+        // return var_dump($reg);
+        return AuthController::form_register($this, $request, $response,  [
+            'reg'=>$reg
+        ]);
     });
 
     
