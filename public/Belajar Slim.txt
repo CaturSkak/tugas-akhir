@@ -1,0 +1,861 @@
+Belajar Slim
+1. install Slim 
+composer create-project slim/slim-skeleton:3.1.8 belajar-slim -vv
+2. buka terminal pada vscode untuk menjadi kan domain
+php -S localhost:8200 -t public
+
+Bab Routing & Route
+Routing metode menentukan route pada website
+Route URL yang dapat diakses oleh user biasanya filenya routes.php didalem folder src
+<-- Struktur Route -->
+//sample log message (contoh route)
+$container->get('logger')->info("Slim-Skeleton '/' route);
+
+//return index view hanya menggunakan get untuk merender (wajib ditulis untuk merender file phtml ke bentuk website ketika diakses)
+return $container->get('renderer')->render($respone, 'index.phtml',$args);
+
+<--- Metode --->
+1. POST
+    $app->post('/nama_url',
+//membuat resource baru atau mengambil data dari server
+2. DELETE (menghapus data yang ada pada server)
+    $app->delete('/nama_url',
+3. ANY (sebenarnya bukan metode request http tapi metode request apapun)
+    $app->any('/nama_url',
+4. Multiple HTTP Method (mengakses lebih dari 1 metode request)
+    $app->map(['GET', 'POST'], '/nama_url',
+
+<--- Grouping Route --->
+mengelompokan route dalam 1 group ketika memiliki route dengan pola yang sama
+- /setting/admin
+- /setting/member
+- /setting/sales
+
+    $app->group('/settings', function (App $app){
+        $app->get('/admin', function ($request, $response, $args){    
+        });
+
+        $app->get('/member', function ($request, $response, $args){    
+        });
+
+        $app->get('/sales', function ($request, $response, $args){    
+        });
+
+    });
+
+<--- Middleware --->
+sebuah layer yang terletak diantara router dan controler dan menjalankan
+suatu aksi tertentu sebelum request yang melalui router masuk ke countroler
+--kegunaan--
+menjalankan aksi sebelum controler menerima dan memproses data sebagai autentikator 
+sudah login apa belum.
+-Data logger -Response handler 
+-Authorization - validasi input - sanitasi input
+
+//Merubah composer.json
+"autoload-dev": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+App\\ namespace yang akan digunakan
+app/  merupakan folder dimana file-file Controler, Model, dan Middleware akan delatakan
+
+//composer dump-autoload -o dijalankan di vscode digunakan untuk merombak ulang konfigurasi project 
+dan file sehingga mneggunakan konfigurasi baru yang sudah diberikan
+
+<?php
+
+namespace App\Middleware; //mendaftarkan file Auth.php dinamaspace App\Middleware. penulisan didasarkan pada di folder ini diletakan
+session_start();
+
+class Auth {
+    //__invoke fungsi yang akan dijalankan
+    //$next aksi yang akan dilakukan selanjutnya
+    public function __invoke($req, $res, $next){
+        if(!isset($_SESSION['id'])){
+            return $res->withRedirect('/login');
+        }
+        return $next($req, $res);
+    }
+}
+
+
+?>
+
+<--- Parameter --->
+    https://www.gamelab.id/class/233/module/6
+
+233 -> id class yang diakses
+6 -> berubah sesuai modul yang diakses
+
+maka kita bisa mengambil data kelas yang memiliki id 233 
+dan modul yang memiliki id 6 dari kelas tersebut
+
+Parameter merupakan nilai dinamis yang nanti nilainya ditampilkan pada halaman web
+dan nilainya digunakan untuk mengambil data dari database
+
+--membuat parameter pada route di slim--
+     $app->get('/{nama_param}', function (Request $request, Response $response, array $args){
+      
+      // dijalankan aksi menggunkaan $args['nama_param']
+
+    });
+     $app->get('/nama_route/{nama_param}', function (Request $request, Response $response, array $args) use ($container) {
+      
+      // dijalankan aksi menggunkaan $args['nama_param']
+
+    });
+     $app->get('/nama_route/{nama_param}/nama_route', function (Request $request, Response $response, array $args)  use ($container) {
+      
+      // dijalankan aksi menggunkaan $args['nama_param']
+
+    });
+
+//didalam route parameter otomatis akan dimasukan ke dalam array asosiatif bernama $args.
+//sedangkan di dalam file view(file yang digunakan sebagai tampilan website) 
+  nama parameter otomatis akan menjadi nama variabel.
+//kita dapat menggunakan lebih dari 1 parameter pada sebuah route.
+
+<--- Optional Parameter pada Slim --> 
+dengan parameter lebih dari satu
+$app->get('[/{param:.*}]', function (Request $request, Response $response, array $args) use ($container) {
+        // Sample log message
+
+        // Render index view
+        return $container->get('renderer')->render($response, 'greeting.phtml', $args);
+    });
+
+<body>
+    <?php if(!$nama){
+        $nama = 'Gamelab Indonesia';
+       
+    }
+    ?>
+</body>
+
+--Membuat Unlimited parameter--
+$app->get('[/{param:.*}]', function (Request $request, Response $response, array $args) use ($container) {
+       
+        $params = explode('/', $args['param']);
+    });
+
+--Membuat Parameter dengan Patern--
+(mengatur patern atau pola dari sebuah parameter misalnya agar 
+parameter terdiri dari angka saja atau huruf saja)
+
+//angka saja
+    $app->get('/{id:[0-9]+}', function (Request $request, Response $response, array $args) use ($container) {
+       //aksi yang dijalankan
+    });
+//huruf saja
+    $app->get('/{id:[a-zA-z]+}', function (Request $request, Response $response, array $args) use ($container) {
+       //aksi yang dijalankan
+    });
+
+<-- Catatan dalam penulisan Route -->
+contoh
+1. Dengan parameter opsional
+2. patern
+route tidak akan diakses yang bawa maka harus diperhatikan urutanya
+1. patern
+2. parameter opsional
+
+<-- Request -->
+$app->get('/route', function (Request $request, Response $response, array $args) use ($container) {
+     //aksi
+    }); 
+//Parameter Request $request berarti segala reques yang dilakukan oleh clint(user) terhadap browser 
+dan halaman web akan disimpan ke dalam variabel $request.
+
+--Melihat isi dari variabel $request--
+$app->get('/route', function (Request $request, Response $response, array $args) use ($container) {
+     return var_dum($request);
+    }); 
+
+<-- Method getParams() pada Request
+digunakan untuk mendapatkan daftar parameter yang ada pada URL browser.
+Method ini juga umum digunkan untuk mendapatkan data parameter yang dikirimkan
+dengan method GET baik melalui URL maupun melalui AJAX.
+
+//cara penulisan
+    $request->getParams();
+
+//jika diterapkan
+    $app->get('/login', function (Request $request, Response $response, array $args) use ($container) {
+     return var_dum($request->getParams());
+    }); 
+
+<-- Method getParsedBody() pada Request -->
+digunakan untuk mendapatkan parameter berserta nilai yang 
+dikirimkan oleh form HTML.
+    $app->get('/form', function (Request $request, Response $response, array $args) use ($container) {
+       
+        return $container->get('renderer')->render($response, 'form.phtml', $args);
+    }); 
+
+    $app->post('/form-proses', function (Request $request, Response $response, array $args) use ($container) {
+       
+        return var_dump($request->getParsedBody());
+    });
+---------
+    <form action="/form-proses" method="POST">
+        <label for="uname">Uname:</label>
+        <input type="text" name="uname">
+
+        <label for="posisi">Posisi: </label>
+        <input type="text" name="posisi">
+
+        <button>kirim</button>
+    </form>
+
+<--Method getUploadedFiles() pada Request --->
+mendapatkan file yang dikirim
+
+<--- Response --->
+digunakan untuk menangkap request dari clint/user maka variabel Response ini akan 
+mengembalikan nilai atau data kepada client/user.
+
+<-- Membuat Route Endpoint API -->
+1. teknik ini merupakan endpoint API
+2. Route/URL diakses melalui metode AJAX dan sejenisnya
+3. Data yang dikirim akan dapat digunakan untuk merubah informasi
+yang ada pada website tanpa harus me-refersh halaman.
+bisanya dikerjakan oleh frontend bagian beckend bagian logic untuk mendapatkan data
+
+<-- Controler -->
+sebuah framework biasanya MVC(Model,View,Controller)
+ibarat jembatan antara router (sebagai model) dan data yang ada 
+pada database
+--Tugas Controller--
+1. Mengambil atau Menerima Data
+2. Kemudian dari data yang diterima akan diproses/diolah sehingga 
+   menghasilkan output baru.
+3. Nantinya hasil output akan dikirimkan ke view sebagai data yang akan ditampilkan
+4. kita juga dapat menentukan bentuk data yang di-outputkan apakah
+   akan berbentuk View yang dirender atau JSON.
+
+//Merubah composer.json
+"autoload-dev": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+App\\ namespace yang akan digunakan
+app/  merupakan folder dimana file-file Controler, Model, dan Middleware akan delatakan
+
+composer dump-autoload -o dijalankan di terminal VScode.
+
+<-- Membuat Controler -->
+    <?php
+    namespace App\Controller;
+    //class harus disesuaikan dengan nama filenya.
+    class IndexController{
+    //index() merupakan fungsi/method yang nanti akan dipanggil dirouter
+    //fungsi yang ada didalam file class controller bertindak sebagai
+    //pemroses (logic) yang melakukan suatu perhitungan tertentu atau proses pengambilan data.
+    public static function index (){
+        echo 'ini controller index';
+        }
+    }
+    ?>
+
+<-- Menggunakan Controler: Cara 1 -->
+    $app->get('/index','\App\Controller\IndexController:index');
+
+<-- Cara: 2 -->
+Menggunakan / menambahkan diatas
+    use App\Controller\IndexController;
+Untuk Route
+    $app->get('/index',IndexController::class . ':index');
+
+<-- Cara: 3 -->
+    $app->get('/index', function ( $req,  $rsp, array $args=[]) use ($container) {
+        return IndexController:: index($this, $req, $rsp , $args);
+    });
+
+
+<-- Belajar Medoo -->
+framework php tujuannya agar tulisannya lebih terstuktur, sederhana,
+dan mudah dibaca shingga proses debugging lebih cepat
+
+--Tanpa Medoo--
+mysqli_query('SELECT id, nama FROM member LEFT JOIN class_participant WHERE class_participant.id_member = member.id');
+
+--Menggunakan Medoo--
+$database->select('tbl_member', [
+    "[>]tbl_class_participant" => [tbl_member.id => tbl_class_participant.id_member]
+    ], [
+        "tbl_member.id",
+        "tbl_member.nama"
+    ];
+])
+
+--Kelebihan Medoo--
+framework frendly,gratis,powerfull,wide suprort,ringan,aman,mudah
+
+--Menginstal Medoo--
+composer require catfan/medoo di terminal vscode
+
+--Setup Medoo Pada Project--
+Setelah kita mengisnstal medoo kita perlu menambahkan beberapa baris kode untuk 
+mengkonfigurasi dan menghubungkan antara medoo dengan database
+
+//Di file Route panggil namespace milik Medoo 
+    use Medoo\Medoo
+
+//Lalu hubungkan medo dengan database melalui baris kode
+$database = new Medoo([
+    'database_type' => 'mysql', //merupakan jenis DBMS yang digunakan
+    'server' => 127.0.0.1', //merupakan host/url yang dipakai untuk mengakses database. biasanya mengisikan 127.0.0.1 atau localhost
+    'database_name' => 'database_name',
+    'username' => 'your_username',
+    'password' => 'your_password',
+])
+
+//ini bisa ditaruh di dependencies.php atau di routes.php
+
+<-- Merestart localhost -->
+php -S localhost:8200 -t public
+diterminal vscode http://localhost:8200
+
+--Register Medoo di Container--
+$container['db'] = function($c) {
+    $database = new Medoo([
+        'database_type' => 'mysql',
+        'server' => '127.0.0.1',
+        'database_name' => 'belajar_db',
+        'username' => 'root',
+        'password' => '',
+    ]);
+
+    return $database;
+};
+
+--Memakai dicontroler--
+$this->db atau $app->db
+
+<?php
+namespace App\Controller;
+class IndexController{
+    public static function index ($app, $req, $rsp, $args){
+        // echo 'ini controller index';
+        // return var_dump($req->getParams());
+        //http://localhost:8200/index?name=bima
+        // return $rsp->withJson($app->db->select('user_details', '*'));
+        var_dump($app->db->select('user_details', '*')) ;
+        die ();
+        
+        $app->get('renderer')->render($rsp, 'index.phtml', $args);
+    }
+}
+
+?>
+
+<-- Query SELECT -->
+
+$app->db->select('nama_tabel', join_tabel, daftar_kolom, klausa_where);
+
+//jika dijabarkan
+$app->db->select('nama_tabel',
+    [join tabel],
+    [daftar kolom],
+    [klausa where, group, order, limit]
+);
+//join_tabel, kita bisa menggunakan parameter untuk melakukan join.
+//jika tidak melakukan join bisa diganti dengan daftar_kolom yang akan diambil datanya
+
+--contoh--
+$data = $app->select('user_details', [
+    'name',
+    'gender'
+], [
+    'user_id' => 2
+]);
+
+//tejemahnya 
+SELECT name, gender FROM user_details WHERE user_id =2
+
+// bisa pake Query
+$app->db->query("SELECT <username> 
+FROM <user_details> 
+WHERE <user_id> = 2")->fetch());
+
+$app->db->query("SELECT <username> 
+FROM <user_details> ")->fetchAll());
+
+
+<-- Query GET -->
+$data = $app->db->get('user_details', '*');
+mengambil 1 buah data teratas saja.
+
+//Query SELECT menghasilkan 1 buah array output dari tiap baris
+data pada tabel(jumlahnya lebih dari 1) 
+mengakses array pertama
+$data[0][usenamae]
+
+//Query GET menghasilkan 1 array yaitu array asosiatif yang
+keynya merupakan judul/nama kolom untuk mengakses data username
+dari array.
+
+<-- Query Insert -->
+    $app->db->insert('nama_tabe', [
+        'data1' => 'value1',
+        'data2' => 'value2',
+        'data n => 'value n'
+    ]);
+
+    $data = $this->db->insert('user_details', [
+        'username' => 'bimagamelab',
+        'first_name' => 'bima',
+        'last_name' => 'gamelab'
+    ])
+
+    //terjemah
+    insert into 'user_details' ('username', 'first_name', 'last_name') values ('bimagamelab', 'bima', 'gamelab')
+
+<-- Query UPDATE -->
+    $app->db->update('nama_tabel', [
+        'data1' => 'value1'
+    ],[
+        'kondisi_1' => 'value_1'
+    ]);
+
+    $data = $app->db->update('user_details',[
+        'gender' => 'Male',
+        'status' => '1'
+    ],[
+        'user_id' => '11'
+    ])
+
+    //terjemah
+    update 'user_details' set 'gender' = 'Male', 'status' = '1' where 'user_id' = '11'
+
+<-- Query DELETE -->
+
+    $app->db->delete('nama_tabel', 'kondisi');
+
+    $data = $app->db->delete('user_details',[
+        'user_id' => '10015'
+    ]);
+
+    //terjemah
+    delete form 'user_details' where 'user_id' = '10001'
+
+<-- Tips Debugging pada Medoo -->
+fungsi debug() di Medoo 
+menerjemahkan query Medoo menjadi query SQL saat ditampilkan
+
+--contoh--
+     $data = $app->db->debug->update('user_details',[
+        'gender' => 'Male',
+    ],[
+        'user_id' => '11'
+    ]);
+untuk mengecek apakah ada yang eror dan memunculkan querynya.
+
+<-- Sintak Where -->
+klausa WHERE selalu di dalam parameter terakhir pada query medo
+-BETWEEN   -NOT BETWEEN
+- NOT      -IN 
+- NOT IN   -LIKE
+
+---BETWEEN---
+SELECT * FROM 'user_details' WHERE user_id BETWEEN 1 AND 3
+
+DI Medoo
+$data = $app->db->select('user_details', '*', [
+    'user_id [<>] => [1,3]
+]);
+//Mengambil data yang nilainya diantara 1 dan 3
+
+
+---NOT BETWEEN---
+SELECT * FROM 'user_details' WHERE user_id NOT BETWEEN 1 AND 3
+
+DI Medoo
+$data = $app->db->select('user_details', '*', [
+    'user_id [><]' => [1,3]
+]);
+//Mengambil data yang nilainya bukan diantara 1 dan 3
+
+---NOT (!=)---
+akan mengambil data yang tidak sama dengan nilai yang diberikan.
+
+    $data = $app->db->select('user_details', '*', [
+        'user_id[!]' => 1 
+    ]);
+
+terjemah
+    SELECT * FROM `user_details` WHERE `user_id` != 1
+
+---IN---
+MENGAMBIL DATA YANG NILAINYA BERADA DI ANTARA DAFTAR NILAI YANG diberikan
+
+    $data = $app->db->select('user_details', '*', [
+        'user_id' => [1, 3, 5]
+    ]);
+terjemah 
+    SELECT * FROM `user_details` WHERE `user_id` IN (1, 3, 5)
+    
+---NOT IN---
+MENGAMBIL DATA YANG NILAINYA BUKAN BERADA DI ANTARA DAFTAR NILAI YANG diberikan
+
+    $data = $app->db->select('user_details', '*', [
+        'user_id[!]' => [1, 3, 5]
+    ]);
+terjemah 
+    SELECT * FROM `user_details` WHERE `user_id` NOT IN (1, 3, 5)
+
+---LIKE---
+MENDAPATKAN DATA YANG NILAINYA MEMILIKI POLA ATAU KEMIRIPAN TERTENRU
+
+    $data = $app->db->select('user_details', '*', [
+            'user_id[~]' => "%5"
+        ]);
+    //MENGAMBIL DATA YANG AKHIRAN 5
+
+- %STAN AKHIRAN STAN
+- AL%   AWALAN AL
+- %AL%  MENCARI DATA YANG TERDAPAT KATA AL
+- LONDO_ MENCARI KOLOM YANG VALUENYA SEPERTI LONDON. LONDOX,LONDOS DLL
+
+-- GROUP BY --
+MENDAPATKAN DATA SEKALIGUS mengelompokan
+
+SELECT COUNT(ID) AS 'total', 'divisi' FROM 'user_v2' GROUP BY 'divisi';
+
+medoo
+    $data = $app->db->select('user_v2', [
+        'total' => Medoo::raw("COUNT(id)"),
+        'divisi'
+    ], [
+        'GROUP' => 'divisi'
+    ])
+
+-- HAVING --
+HAVING MIRIP WHERE CUMA KONDISINYA BERUPA AGREGASI
+LEBIH BESAR, LEBIH KECIL, DLL
+
+SELECT 'name', 'gender' FROM 'user_details' HAVING 'user_id' > 2;
+
+medoo
+
+    $data = $app->db->select('user_details', [
+        'name',
+        'gender'
+    ], [
+        'HAVING' => [
+            'user_id[>]' => 2
+        ]
+    ]);
+
+---LIMIT---
+MEMBATASI SEBERAPA BANYAK DATA YANG AKAN diambil
+
+SELECT * FROM user_details LIMIT 5
+
+$app->db->select('user_details', '*', [
+    'LIMIT' => 5
+]);
+
+$app->db->select('user_details', '*', [
+    //ambil data pada index (urutan) ke 4
+    //dan ambil 5 data setelahnnya
+    'LIMIT' => [3, 5]
+]);
+
+
+---ORDER BY---
+MENGURUTKAN DATA ASCENDING DAN DESCENDING
+
+SELECT * FROM user_details ORDER BY user_id DESCENDING
+
+    $data = $app->db->select('user_details', '*', [
+        'ORDER' => [
+            'user_id' => 'DESC'
+        ]
+    ]);
+
+<-- TWIG -->
+Merupakan templateing engine bahasa php
+untuk merender kode-kode dan variabel PHP tanpa menggunakan tag PHP 
+dan juga fungsionalitas PHP. 
+sehingga tempalting bentuk file view berextensi HTML
+
+keuntungan menggunakan templating engine adalah proses render
+view bisa dilakukan dengan cepat.
+
+--Kelebihan--
+Ringkas, Sintak berorieantasi template, memiliki fitur penuh
+
+--instal TWIG--
+    composer require "slim/twig-view:~2.5"
+
+   Untuk versi terbaru = composer require "slim/twig-view:
+    
+--Meregister TWIG--
+buka route tambahkan kode ini dibawah container
+
+    $container['view'] = function ($container) {
+        $view = new \Slim\View\Twig('path/ke/templates',[
+            'cache' => false
+        ]);
+
+        $router = $container->get('router');
+        $uri = \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER));
+        $view->addExtension (new \Slim\Views\TwigExtension($router, $uri));
+
+        return $view;
+    };
+
+//path/ke/templates dapat disesuaikan dengan folder dimana kamu
+akan meletakan fil-file template (file view)
+
+$view = new \Slim\View\Twig('.../templates',[
+            'cache' => false
+        ]);
+//Path '../templates' artinya
+1. keluar satu folder dari direktori sekarang ini (dikerktori dimana file routes.php berada)
+2. Kemudian masuk ke folder templates
+
+<-- Templating Menggunakan TWIG -->
+
+--konsep templating--
+Membuat 1 atau beberapa template yang bisa digunakan secara berulang-ulang.
+Memiliki 1 file HTML utama dimana ia digunakan sebgai template.
+dan memiliki artibut HTML dari <html> <head><body></body></head></html>
+yang mana natnti akan diatur dan di isi masing masing blok
+
+--Membuat File Template--
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+
+    {% block css %}
+    {% endblock  %}
+    </head>
+    <body>
+    {% block content %}
+    {% endblock  %}
+    
+    {% block js %}
+    {% endblock  %}
+    
+    </body>
+    </html>
+
+1. Kurung kurawal: {{ }}
+   Simbol ini digunakan untuk menampilkan nilai sebuah variabel dan item dari object/array saja
+
+2. Kurung Kurawal & Persen: {% %}
+   digunakan untuk membuat block template dinamis, melakukan proses perulangan,
+   membuat nlok kondisional, membuat, variabel dll selain menampilkan nilai
+--Menggunakan Extends pada Twig--
+{% extends "layout/master.html" %} 
+
+{% set title = "Halaman Utama - Twig" %} 
+
+{% block content %} 
+
+<h1>Nama Saya Catur</h1>
+<p>Usia Saya 23 Tahun</p>
+
+{% endblock %} 
+
+//membuat file baru view bernama home.html
+
+--Merender menggunakan twig--
+$app->get('/coba-twig', function (Request $request, Response $response, array $args) use ($container) {
+
+        // Render index view
+        return $this->view->render($response, 'home.html', $args);
+    });
+
+--Merender menggunakan twig melalui controler--
+//File Controler (bikin fungsi)
+public static function showCoba($app, $req, $rsp, $args){
+        $data = [
+            'nama' => 'Bima',
+            'usia' => 25
+        ];
+
+        $app->view->render($rsp, 'home.html', [
+            'data' => $data
+        ]);
+    }
+//Routenya 
+$app->get('/coba-controler', function (Request $request, Response $response, array $args) use ($container) {
+
+        // Render index view
+        return IndexController::showCoba($this, $request, $response,  $args);
+    });
+//viewnya
+{% extends "layout/master.html" %} 
+
+{% set title = "Halaman Utama - Twig" %} 
+
+{% block content %} 
+
+<h1>Nama Saya {{data.nama}}</h1>
+<p>Usia Saya {{data.usia}} Tahun</p>
+
+{% endblock %} 
+
+<-- Templating Dasar -->
+---Komentar---
+{# komentar 1
+   komentar 2  #}
+
+--Condisional Statement--
+{% if kondisi_1 %}
+    ....
+{% elseif kondisi_2 %}
+    ...
+{% else kondisi_1 %}
+    ...
+{% endif kondisi_1 %}
+
+//endif harus ditulis di akhir kalau tidak eror
+
+--Melakukan Looping For di Twig--
+{% for i in range (0,3) %}
+    {{ i }}
+{% endfor %}
+
+//range() ->fungsi built-in(bawaan) membuat array angka secara urut dimana parameter 1 angka 1 parameter 2 angka terakhir 
+
+--Melakukan Looping Foreach--
+//Bikin Controler
+public static function showCoba($app, $req, $rsp, $args){
+        $data = [
+            'nama' => 'Bima',
+            'usia' => 25
+        ];
+        $cities = [
+            'Medan', 'Bali', 'jakarta', 'Bandung', 'Makasar'
+        ];
+
+        $app->view->render($rsp, 'home.html', [
+            'data' => $data,
+            'cities' => $cities
+        ]);
+    }
+//View
+{# Perulangan Foreach #}
+{% for c in cities %}
+    <p>{{ c }}</p>
+{% endfor %}
+
+--Menampilkan Nilai Key Array dalam Perulangan--
+menampilkan nilai key pada array asosiatif ataupun object saat perulangan
+
+{# Perulangan array asosiatif #}
+{% for key, m in data %}
+    <p>{{ key }}: {{ m }}</p>
+{% endfor %}
+
+--Mengakses Index pada perulangan dengan variabel loop--
+loop.index  = Mengakses index perulangan secara terurut (berindex 1)
+loop.index0 = berindex0
+loop.revindex = secara terbalik (berindex 1)
+loop.revindex0 = secara terbalik (berindex 0)
+loop.first = bernilai true jika nomor perulangan terkini merupakan sequence pertama dalam perulangan
+loop.last = bernilai true jika nomor perulangan terkini merupakan sequence terakhir dalam perulangan
+loop.length = banyaknya item perulangan
+//bisa digunakan untuk array atau object
+
+--Mengakses Array Sederhana dan Array Asosiatif--
+//Array Sederhana
+{{cities [0]}}
+{{cities [2]}}
+//Array Asosiatif
+{{ data.nama}}
+{{ data.usia}}
+{{ data.alamat}}
+
+<-- Built-In function pada Twig-->
+lower, upper, nl2br, date, include, json_encode, slice, length
+
+{{variabel|nama_fungsi|nama_fungsi2}}
+
+--Function lower--
+mengubah seluruh huruf yang terdapat variabael atau string menjadi lowercase (huruf kecil)
+
+{{nama_variabel|lower}}
+//cara pengaplikasiannya
+{% set nama = 'Gamelab Indonesia' %}
+{{ nama|lower}}
+//atau//
+{{ 'Game Lab'|lower}}
+
+--Function upper--
+mengubah seluruh huruf yang terdapat variabael atau string menjadi  (huruf kapital)
+
+{{nama_variabel|upper}}
+//cara pengaplikasiannya
+{% set nama = 'Gamelab Indonesia' %}
+{{ nama|upper}}
+//atau//
+{{ 'Game Lab'|upper}}
+
+--Function nl2br--
+merupakan singkatan dari new line to break artinya
+fungsi ini membaca new line atau simbol \n dari sebuah string menjadi baris baru
+intinya menambahkan enter
+//cara pengaplikasiannya
+{% set nama = 'Gamelab Indonesia' %}
+{{ nama|nl2br}}
+//atau//
+{{ 'Game Lab'| nl2br}}
+
+--Function date--
+menampilkan format tnaggal zona waktu tertentu
+{{ tanggal|date(format, zona_waktu)}}
+//format 'd/m/Y', 'Y/m/d' H:1' jika di isi null akan menampilkan waktu lengkap
+//cara pengaplikasiannya
+{{ now|date(null, 'Asia/Jakarta')}}
+
+--Function include--
+memanggil file template lain di dalam file template yang memanggilnya
+{% include 'path/ke/file' %}
+
+--Function json_encode--
+digunakan untuk meng-encode atau memformat string menjadi format json
+biasanya digunakan apabila data yang diperoleh diperoleh dari beckend 
+belum memiliki format json sehingga perlu di encode menjadi json
+
+{{ nama_var|json_encode }}
+
+--Function json_encode--
+digunakan untuk menekstrak potongan sebuah string atau array. 
+mengambil data dari string/array mulai dari index tertentu
+{{ data|slice(start, lenght) }}
+//lenght panjang data yang diambil
+
+{% set arr =[2, 10, 17, 1, 19, 57] %}
+akan menampilkan 17, 1, 19
+{% for a in arr|slice(2,3) %}
+    <p>{{ a }}</p>
+{% endfor %}
+atau
+{% for a in arr[2:3] %}
+    <p>{{ a }}</p>
+{% endfor %}
+
+--Function lenght--
+digunakan untuk menghitung panjang string atau jumlah item di dalam array
+{% set arr =[2, 10, 17, 1, 19, 57] %}
+
+{{ arr|lenght }}
+
+--Function Chaining--
+teknik penulisan beberapa fungsi sekaligus dalam satu baris
+
+{% set arr ='Gamelab Indonesia' %}
+
+{{ arr|upper|nl2br }}
+//jangan sampai terbalik posisi fungsi
+

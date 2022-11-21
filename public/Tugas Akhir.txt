@@ -1,0 +1,8 @@
+Tugas Akhir Slim
+Harus ada 
+1. AJAX
+2. Loading Bar
+3. Alert
+4. Responsif
+5. JOIN
+6. TABLE PAGINATION
