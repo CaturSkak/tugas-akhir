@@ -51,7 +51,7 @@ return function (App $app) {
         ]);
         // Render index view
     });
-
+    
      $app->get('/register', function (Request $request, Response $response, array $args) use ($container) {
 
         // Render index view
@@ -64,6 +64,26 @@ return function (App $app) {
         return AuthController::form_register($this, $request, $response,  [
             'reg'=>$reg
         ]);
+    });
+
+    $app->post('/delete', function (Request $request, Response $response, array $args) use ($container) {
+        $data = $request->getParsedBody();
+        // $del = $container->db->delete('user_details',[
+        //     "user_id"=>$data
+        // ]);
+        return DashboardController::delete($this, $request, $response,  [
+            'data'=>$data
+        ]);
+        return var_dump($data);
+    });
+    $app->get('/{id}/select', function (Request $request, Response $response, array $args) use ($container) {
+        $data = $args['id'];
+
+        return DashboardController::ubah($this, $request, $response,  [
+            'data'=>$data
+        ]);
+        
+        
     });
 
     

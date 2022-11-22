@@ -30,12 +30,12 @@ class AuthController{
         $username = $reg['username'];
         $password = md5($reg['password']);
         
-        $user_awal = $app->db->select('user_details', '*', [
+        $user_awal = $app->db->select('tbl_admin', '*', [
                 'username' => $username
         ]);
         // return var_dump($user_awal);
         if($user_awal == null){
-            $app->db->insert('user_details', [
+            $app->db->insert('tbl_admin', [
                 'username' => $username,
                 'first_name' => $first_name,
                 'last_name' => $last_name,
@@ -62,7 +62,7 @@ class AuthController{
         // return var_dump($password);
 
         
-        $valid = $app->db->get('user_details','*',[
+        $valid = $app->db->get('tbl_admin','*',[
             "username" => $username,
             "password" => $password
         ]);
@@ -73,10 +73,24 @@ class AuthController{
                 ]);
         }else {
             $_SESSION['username'] = $username = $log['username'];
-
+            
+            $data = $app->db->select('tbl_mahasiswa',[
+                "[><]tbl_jurusan"=>["id_jurusan" => "jurusan_id"]
+            ],[
+                'id',
+                'nama',
+                'jenis_kelamin',
+                'kota',
+                'jurusan'
+            ]);
+            $jurusan = $app->db->select('tbl_jurusan','*');
+            // var_dump($data);
+            // die();
             $app->view->render($rsp, 'index.html',[
                 'hasvalidate' =>true,
-                'username' => $_SESSION['username']
+                'username' => $_SESSION['username'],
+                'data'   => $data,
+                'jurusan'=> $jurusan
                 ]);
         }
         
