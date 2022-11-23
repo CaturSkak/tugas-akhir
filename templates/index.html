@@ -96,64 +96,7 @@
   </div>
 
 </section>
-{# 
-<section class="section py-5 " id="Data">
-  <div class="container">
-    <div class="row bg-light shadow-lg py-5">
 
-      <div class="col-lg-12 col-12 text-center mb-4">
-        <h2>Data Mahasiswa</h2>
-
-        <div class="position-relative justify-content-right">
-
-          <div class="position-absolute top-0 end-0 translate-middle p-2">
-            <button button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#tambah">Tambah
-              Data</button>
-
-          </div>
-        </div>
-
-
-      </div>
-
-      <table class="table" id="mydataa">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Nama</th>
-            <th scope="col">Jenis Kelamin</th>
-            <th scope="col">Kota</th>
-            <th scope="col">Jurusan</th>
-            <th scope="col">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for user in data %}
-          <tr>
-            <th scope="row">{{ loop.index }}
-            </th>
-            <td>{{user.nama}}</td>
-            <td>{{user.jenis_kelamin}}</td>
-            <td>{{user.kota}}</td>
-            <td>{{user.jurusan}}</td>
-            <td>
-              <!-- Link to open the modal -->
-              <button button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                data-bs-whatever="{{user.id}}">Ubah</button>
-              <button type="button" class="btn btn-danger delete_items" id="{{user.id}}">Hapus</button>
-            </td>
-          </tr>
-          {%endfor%}
-        </tbody>
-      </table>
-
-
-
-
-    </div>
-
-  </div>
-</section> #}
 
 <section class="section py-5 " id="Data">
   <div class="container">
@@ -165,8 +108,9 @@
         <div class="position-relative justify-content-right">
 
 
-          <div class="pull-right justify-content-right"><a href="#" class="btn btn-sm btn-success" data-bs-toggle="modal"
-              data-bs-target="#ModalaAdd"><span class="fa fa-plus"></span> Tambah Barang</a></div>
+          <div class="position-absolute bottom-0 end-0 justify-content-right"><a href="#" class="btn btn-sm btn-success"
+              data-bs-toggle="modal" data-bs-target="#ModalaAdd"><span class="fa fa-plus"></span> Tambah Data</a>
+          </div>
         </div>
 
 
@@ -174,7 +118,7 @@
 
       <div class="row" id="demo">
         <div id="reload">
-          <table class="table display" id="data_v2" >
+          <table class="table display" id="data_v2">
             <thead>
               <tr>
                 <th scope="col">#</th>
