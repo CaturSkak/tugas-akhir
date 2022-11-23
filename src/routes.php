@@ -14,13 +14,13 @@ return function (App $app) {
     $container = $app->getContainer();
     //Merigister View
     $container['view'] = function ($container) {
-        $view = new \Slim\Views\Twig('../templates',[
+        $view = new \Slim\Views\Twig('../templates', [
             'cache' => false
         ]);
 
         $router = $container->get('router');
         $uri = \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER));
-        $view->addExtension (new \Slim\Views\TwigExtension($router, $uri));
+        $view->addExtension(new \Slim\Views\TwigExtension($router, $uri));
 
         return $view;
     };
@@ -31,14 +31,14 @@ return function (App $app) {
         return DashboardController::index($this, $request, $response,  $args);
     })->add(new Auth());
 
-     $app->get('/logout', function (Request $request, Response $response, array $args) use ($container) {
+    $app->get('/logout', function (Request $request, Response $response, array $args) use ($container) {
 
         // Render index view
         session_destroy();
         return AuthController::index($this, $request, $response,  $args);
     });
-     $app->get('/login', function (Request $request, Response $response, array $args) use ($container) {
-        
+    $app->get('/login', function (Request $request, Response $response, array $args) use ($container) {
+
         // Render index view
         return AuthController::index($this, $request, $response,  $args);
     })->add(new isLogin());
@@ -47,12 +47,12 @@ return function (App $app) {
         $reg = $request->getParsedBody();
         // return var_dump($reg);
         return AuthController::login($this, $request, $response,  [
-            'data'=>$reg
+            'data' => $reg
         ]);
         // Render index view
     });
-    
-     $app->get('/register', function (Request $request, Response $response, array $args) use ($container) {
+
+    $app->get('/register', function (Request $request, Response $response, array $args) use ($container) {
 
         // Render index view
         return AuthController::register($this, $request, $response,  $args);
@@ -62,17 +62,17 @@ return function (App $app) {
         $reg = $request->getParsedBody();
         // return var_dump($reg);
         return AuthController::form_register($this, $request, $response,  [
-            'reg'=>$reg
+            'reg' => $reg
         ]);
     });
 
     $app->post('/delete', function (Request $request, Response $response, array $args) use ($container) {
         $data = $request->getParsedBody();
-        // $del = $container->db->delete('user_details',[
-        //     "user_id"=>$data
+        // $del = $container->db->delete('tbl_mahasiswa', [
+        //     "id" => $data
         // ]);
         return DashboardController::delete($this, $request, $response,  [
-            'data'=>$data
+            'data' => $data
         ]);
         return var_dump($data);
     });
@@ -80,19 +80,33 @@ return function (App $app) {
         $data = $args['id'];
 
         return DashboardController::ubah($this, $request, $response,  [
-            'data'=>$data
+            'data' => $data
         ]);
-        
-        
     });
 
-    
-    
+    $app->post('/tambah-data', function (Request $request, Response $response, array $args) use ($container) {
+        $tambah = $request->getParsedBody();
 
-    
+        return var_dump($tambah);
+        // return DashboardController::tambah_data($this, $request, $response,  [
+        //     'tambah' => $tambah
+        // ]);
+    });
+    $app->get('/tampil-data', function (Request $request, Response $response, array $args) use ($container) {
+        $data = $container->db->select('tbl_mahasiswa', [
+            "[><]tbl_jurusan" => ["id_jurusan" => "jurusan_id"]
+        ], [
+            'id',
+            'nama',
+            'jenis_kelamin',
+            'kota',
+            'jurusan',
+        ]);
+        return var_dump($data,   [
+            'data' => $data
+        ]);
+        // return DashboardController::tambah_data($this, $request, $response,  [
+        //     'tambah' => $tambah
+        // ]);
+    });
 };
-
-
-
-
-?>

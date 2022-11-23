@@ -1,0 +1,62 @@
+{% block tambah %}
+<script>
+    $(document).ready(function () {
+        $('.tambah_items').click(function () {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'Apa kamu yakin?',
+                text: "Kamu ingin menambah data ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, tambah data ini!',
+                cancelButtonText: 'Tidak, Batalkan!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var data = $(this).attr('id')
+                    $.ajax({
+                        type: 'POST',
+                        url: '/tambah-data',
+                        data: {
+                            id: data
+                        },
+                        success: function (response) {
+                            console.log(response)
+                            // if (response) {
+                            //     swalWithBootstrapButtons.fire(
+                            //         'Berhasil!',
+                            //         'Data telah ditambahkan.',
+                            //     ).then(function () {
+                            //         window.location.replace("/")
+                            //     })
+                            // } else {
+                            //     Swal.fire({
+                            //         icon: 'error',
+                            //         title: 'Oops...',
+                            //         text: 'Ada yang eror!',
+                            //     })
+                            // }
+                        }
+                    })
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Batalkan',
+                        'Kamu telah membatalkan:)',
+                        'error'
+                    )
+                }
+            })
+        })
+    })
+</script>
+{% endblock tambah %}
