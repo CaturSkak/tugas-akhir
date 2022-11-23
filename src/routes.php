@@ -79,7 +79,7 @@ return function (App $app) {
     $app->get('/{id}/select', function (Request $request, Response $response, array $args) use ($container) {
         $data = $args['id'];
 
-        return DashboardController::ubah($this, $request, $response,  [
+        return DashboardController::ubah_modal($this, $request, $response,  [
             'data' => $data
         ]);
     });
@@ -87,26 +87,25 @@ return function (App $app) {
     $app->post('/tambah-data', function (Request $request, Response $response, array $args) use ($container) {
         $tambah = $request->getParsedBody();
 
-        return var_dump($tambah);
-        // return DashboardController::tambah_data($this, $request, $response,  [
-        //     'tambah' => $tambah
-        // ]);
-    });
-    $app->get('/tampil-data', function (Request $request, Response $response, array $args) use ($container) {
-        $data = $container->db->select('tbl_mahasiswa', [
-            "[><]tbl_jurusan" => ["id_jurusan" => "jurusan_id"]
-        ], [
-            'id',
-            'nama',
-            'jenis_kelamin',
-            'kota',
-            'jurusan',
+        // return var_dump($tambah);
+        return DashboardController::tambah_data($this, $request, $response,  [
+            'tambah' => $tambah
         ]);
-        return var_dump($data,   [
+    });
+    
+    $app->get('/tampil-data', function (Request $req, Response $response, array $args) use ($container) {
+        
+         return DashboardController::tampil_data($this, $req, $response,  $args);
+    });
+
+    $app->post('/ubah', function (Request $request, Response $response, array $args) use ($container) {
+        $data = $request->getParsedBody();
+        // return var_dump($data);
+
+        return DashboardController::ubah_data($this, $request, $response,  [
             'data' => $data
         ]);
-        // return DashboardController::tambah_data($this, $request, $response,  [
-        //     'tambah' => $tambah
-        // ]);
     });
+
+    
 };

@@ -1,0 +1,264 @@
+{% block ajax %}
+{# {{Tabel}} #}
+<script type="text/javascript">
+    $(document).ready(function () {
+        const editModal = document.getElementById('ModalaEdit')
+        const editInput = document.getElementById('name')
+        editModal.addEventListener('shown.bs.modal',()=>{
+            editInput.focus();
+        })
+        const insertModal = document.getElementById('ModalaAdd')
+        const insertInput = document.getElementById('tambah_nama')
+        insertModal.addEventListener('shown.bs.modal',()=>{
+            insertInput.focus();
+        })
+        initTable = function(){
+            table = $("#data_v2").on('preXhr.dt', function ( e, settings, data ) {
+                
+    
+                }).on( 'draw.dt', function () {
+                    
+    
+                }).DataTable({
+                "columnDefs": [
+                    { "width": "1%", "targets": 0, className: "text-right","orderable": false },
+                    { "width": "15%", "targets": 1, className: "text-left","orderable": false },
+                    { "width": "10%", "targets": 2,"orderable": false },
+                    { "width": "15%", "targets": 3, className: "text-right","orderable": false },
+                    { "width": "15%", "targets": 4,className: "text-left","orderable": false },
+                    { "width": "15%", "targets": 5,className: "text-right","orderable": false }
+                ],
+                'pageLength': 10,
+                'processing': true,
+                'serverSide': true,
+                'serverMethod': 'get',
+                'ajax': {
+                    'url':"/tampil-data",
+                    'dataType:':'json',
+                    'type':'get',
+                },
+                'columns': [
+                    { 'data': 'no' },
+                    { 'data': 'nama' },
+                    { 'data': 'jenis_kelamin' },
+                    { 'data': 'kota' },
+                    { 'data': 'jurusan' },
+                    { 'data': 'aksi' }
+    
+                ]
+            });
+            
+        }
+
+        initTable();
+
+        
+
+        
+
+        //GET UPDATE
+        
+        $('#show_data').on('click', '.item_edit', function () {
+            var id = $(this).attr('data');
+            $.ajax({
+                type: "GET",
+                url: "/" + id + "/select",
+                dataType: "JSON",
+                data: { id: id },
+                success: function (data) {
+                    $.each(data, function (id, nama, jenis_kelamin, kota, jurusan) {
+                        $('#ModalaEdit').modal('show');
+                        $('[name="id"]').val(data[0].id);
+                        $('[name="name"]').val(data[0].nama);
+                        $('[name="kelamin"]').val(data[0].jenis_kelamin);
+                        $('[name="kta"]').val(data[0].kota);
+                        $('[name="jrs"]').val(data[0].id_jurusan);
+                    });
+                }
+            });
+            return false;
+        });
+
+
+        //GET HAPUS
+        $('#show_data').on('click', '.item_hapus', function () {
+            var id = $(this).attr('data');
+            $('#ModalHapus').modal('show');
+            $('[name="kode"]').val(id);
+        });
+
+        //Simpan Barang
+        $('#btn_simpan').on('click', function () {
+            var nama = $('#tambah_nama').val();
+            var jenis_kelamin = $('#tambah_kelamin').val();
+            var kota = $('#tambah_kota').val();
+            var id_jurusan = $('#tambah_jurusan').val();
+            $.ajax({
+                type: "POST",
+                url: "tambah-data",
+                dataType: "JSON",
+                data: { nama: nama, jenis_kelamin: jenis_kelamin, kota: kota , id_jurusan: id_jurusan},
+                success: function (data) {
+                    if (data) {
+                        $('#ModalaAdd').modal('hide');
+                        let timerInterval
+                        Swal.fire({
+                            title: 'Memuat Data...',
+                            html: 'Tunggu  <b></b>  Detik.',
+                            timer: 300,
+                            timerProgressBar: true,
+                            didOpen: () => {
+                                Swal.showLoading()
+                                const b = Swal.getHtmlContainer().querySelector('b')
+                                timerInterval = setInterval(() => {
+                                    b.textContent = Swal.getTimerLeft()
+                                }, 100)
+                            },
+                            willClose: () => {
+                                clearInterval(timerInterval)
+                            }
+                        }).then((result) => {
+                            Swal.fire(
+                                {
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: 'Data telah ditambahkan.',
+                                    //footer: '<a href="">Why do I have this issue?</a>'
+                                  }
+                              
+                            )
+                        })
+                            
+                            table.draw()
+                          } else {
+                            Swal.fire({
+                              icon: 'error',
+                              title: 'Oops...',
+                              text: 'Ada yang eror!',
+                              //footer: '<a href="">Why do I have this issue?</a>'
+                            })
+                          }
+                   
+                }
+            });
+            return false;
+        });
+
+        //Update Barang
+        $('#btn_update').click(function (e) {
+            var id = $('#id').val();
+            var nama = $('#name').val();
+            var jenis_kelamin = $('#kelamin').val();
+            var kota = $('#kta').val();
+            var id_jurusan = $('#jrs').val();
+            $.ajax({
+                type: "POST",
+                url: "/ubah",
+                dataType: "JSON",
+                data: { id: id, nama: nama, jenis_kelamin: jenis_kelamin, kota : kota, id_jurusan:id_jurusan },
+                success: function (data) {
+                    if (data) {
+                        $('#ModalaEdit').modal('hide');
+                        let timerInterval
+                        Swal.fire({
+                            title: 'Memuat Data...',
+                            html: 'Tunggu  <b></b>  Detik.',
+                            timer: 300,
+                            timerProgressBar: true,
+                            didOpen: () => {
+                                Swal.showLoading()
+                                const b = Swal.getHtmlContainer().querySelector('b')
+                                timerInterval = setInterval(() => {
+                                    b.textContent = Swal.getTimerLeft()
+                                }, 100)
+                            },
+                            willClose: () => {
+                                clearInterval(timerInterval)
+                            }
+                        }).then((result) => {
+                            Swal.fire(
+                                {
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: 'Data telah diubah.',
+                                    //footer: '<a href="">Why do I have this issue?</a>'
+                                  }
+                              
+                            )
+                        })
+                            
+                            table.draw()
+                          } else {
+                            Swal.fire({
+                              icon: 'error',
+                              title: 'Oops...',
+                              text: 'Ada yang eror!',
+                              //footer: '<a href="">Why do I have this issue?</a>'
+                            })
+                          }
+                }
+            });
+            return false;
+        });
+
+        //Hapus Data
+        $('#btn_hapus').on('click', function () {
+            var kode = $('#textkode').val();
+            $.ajax({
+                type: "POST",
+                url: "/delete",
+                dataType: "JSON",
+                data: { kode: kode },
+                success: function (data) {
+                    if (data) {
+                    $('#ModalHapus').modal('hide');
+                    let timerInterval
+                    Swal.fire({
+                        title: 'Memuat Data...',
+                        html: 'Tunggu  <b></b>  Detik.',
+                        timer: 300,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading()
+                            const b = Swal.getHtmlContainer().querySelector('b')
+                            timerInterval = setInterval(() => {
+                                b.textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then((result) => {
+                        Swal.fire(
+                            {
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Data telah dihapus.',
+                                //footer: '<a href="">Why do I have this issue?</a>'
+                              }
+                          
+                        )
+                    })
+                        
+                        table.draw()
+                      } else {
+                        Swal.fire({
+                          icon: 'error',
+                          title: 'Oops...',
+                          text: 'Ada yang eror!',
+                          //footer: '<a href="">Why do I have this issue?</a>'
+                        })
+                      }
+                    
+
+                    
+                    //tampil_data_barang();
+                }
+            });
+            return false;
+        });
+
+    });
+
+</script>
+{% endblock ajax %}
