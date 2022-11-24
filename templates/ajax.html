@@ -12,30 +12,35 @@
         insertModal.addEventListener('shown.bs.modal',()=>{
             insertInput.focus();
         })
+
         initTable = function(){
+            
             table = $("#data_v2").on('preXhr.dt', function ( e, settings, data ) {
                 
+                console.log('loading ....');
     
                 }).on( 'draw.dt', function () {
-                    
+                    console.log('dapat data');
     
                 }).DataTable({
                 "columnDefs": [
-                    { "width": "1%", "targets": 0, className: "text-right","orderable": false },
-                    { "width": "15%", "targets": 1, className: "text-left","orderable": false },
-                    { "width": "10%", "targets": 2,"orderable": false },
-                    { "width": "15%", "targets": 3, className: "text-right","orderable": false },
-                    { "width": "15%", "targets": 4,className: "text-left","orderable": false },
-                    { "width": "15%", "targets": 5,className: "text-right","orderable": false }
+                    { "width": "1%", "targets": 0, className: "text-center","orderable": false },
+                    { "width": "10%", "targets": 1, className: "text-start","orderable": false },
+                    { "width": "10%", "targets": 2,className: "text-start","orderable": false },
+                    { "width": "10%", "targets": 3, className: "text-start","orderable": false },
+                    { "width": "10%", "targets": 4,className: "text-start","orderable": false },
+                    { "width": "15%", "targets": 5,className: "text-end","orderable": false }
                 ],
                 'pageLength': 10,
                 'processing': true,
                 'serverSide': true,
-                'serverMethod': 'get',
                 'ajax': {
                     'url':"/tampil-data",
                     'dataType:':'json',
                     'type':'get',
+                    'data': function(d) {
+                        //d.jurusan = ;
+                    },
                 },
                 'columns': [
                     { 'data': 'no' },
@@ -51,10 +56,6 @@
         }
 
         initTable();
-
-        
-
-        
 
         //GET UPDATE
         
@@ -124,12 +125,15 @@
                                     title: 'Berhasil',
                                     text: 'Data telah ditambahkan.',
                                     //footer: '<a href="">Why do I have this issue?</a>'
-                                  }
-                              
-                            )
-                        })
+                                }
+                                
+                                )
+                                $('#ModalaAdd').on('hidden.bs.modal', function(){
+                                    $(this).find('form')[0].reset();
+                                 });
+                              table.draw(false)
+                            })
                             
-                            table.draw()
                           } else {
                             Swal.fire({
                               icon: 'error',
@@ -187,7 +191,7 @@
                             )
                         })
                             
-                            table.draw()
+                            table.draw(false)
                           } else {
                             Swal.fire({
                               icon: 'error',
@@ -240,7 +244,7 @@
                         )
                     })
                         
-                        table.draw()
+                        table.draw(false)
                       } else {
                         Swal.fire({
                           icon: 'error',

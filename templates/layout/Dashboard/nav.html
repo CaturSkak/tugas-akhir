@@ -18,31 +18,30 @@
             <div class="collapse navbar-collapse text-center" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
+                        <a class="nav-link" href="/">Home</a>
                     </li>
-
+                    {% if username is not null %}
                     <li class=" nav-item">
-                        <a class="nav-link " href="#Data">Data</a>
+                        <a class="nav-link " href="/Data">Data</a>
                     </li>
 
                     <li class=" nav-item">
                         <a class="nav-link">{{username}}</a>
                     </li>
-
+                    {% endif %}
 
                     <li class="nav-item">
-
+                        {% if username is null %}
+                        <button type="button" class="btn"><a href="/login">Login</a></button>
+                        {% else %}
                         <button type="button" class="btn"><a href="/logout">Logout</a></button>
-
+                        {% endif %}
                     </li>
 
 
                 </ul>
             </div>
     </nav>
-    <div class="text-center bg-dark text-white py-5 mt-5 bg-img">
-        <h1 class="display-1">Slim Medoo Twig</h1>
-        <p class="text-white">Tugas Akhir</p>
-    </div>
+    
 
 </header>

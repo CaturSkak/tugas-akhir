@@ -1,0 +1,104 @@
+{# Komentar #}
+{% extends "layout/Dashboard/master.html" %}
+
+{% set title = "Tugas AKhir - Twig" %}
+
+{% block content %}
+
+{% if hasvalidate == true %}
+<script>
+
+  let timerInterval
+  Swal.fire({
+    title: 'Memuat Data...',
+    html: 'Tunggu  <b></b>  Detik.',
+    timer: 400,
+    timerProgressBar: true,
+    didOpen: () => {
+      Swal.showLoading()
+      const b = Swal.getHtmlContainer().querySelector('b')
+      timerInterval = setInterval(() => {
+        b.textContent = Swal.getTimerLeft()
+      }, 100)
+    },
+    willClose: () => {
+      clearInterval(timerInterval)
+    }
+  }).then((result) => {
+    /* Read more about handling dismissals below */
+    if (result.dismiss === Swal.DismissReason.timer) {
+      console.log('I was closed by the timer')
+    }
+  })
+</script>
+
+{% endif %}
+
+
+<div class="text-center bg-dark text-white py-5 mt-5 bg-img">
+    <h1 class="display-1">Data Mahasiswa</h1>
+    <p class="text-white">Slim Medo Twig</p>
+</div>
+
+<section class="section py-5 " id="Data">
+  <div class="container">
+    <div class="row bg-light shadow-lg py-5">
+
+      <div class="col-lg-12 col-12 text-center mb-4">
+        <h2>Data Mahasiswa</h2>
+      
+      </div>
+      <div class="position-relative ">
+
+        <div class="text-center my-3 mx-3"><a href="#" class="btn btn-sm btn-success "
+            data-bs-toggle="modal" data-bs-target="#ModalaAdd"><span class="fa fa-plus"></span> Tambah Data</a>
+        </div>
+      </div>
+
+      <div class="row" id="demo">
+        <div id="reload" class="table-responsive">
+
+          <table class="table display" id="data_v2">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nama</th>
+                <th scope="col">Jenis Kelamin</th>
+                <th scope="col">Kota</th>
+                <th scope="col">Jurusan</th>
+                <th style="text-align: right;" scope="col">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="show_data">
+              
+            </tbody>
+          </table>
+
+
+        </div>
+      </div>
+
+
+
+
+    </div>
+
+  </div>
+</section>
+
+
+
+
+
+{% include "modal.html" %}
+{% block modal %}
+
+{% endblock modal %}
+
+{% include "ajax.html" %}
+{% block ajax %}
+
+{% endblock ajax %}
+
+
+{% endblock content%}

@@ -5,7 +5,7 @@ namespace App\Middleware;
 
 class isLogin {
     public function __invoke($req, $res, $next){
-        if ($_SESSION['username'] == true) {
+        if (isset($_SESSION['username'])) {
             return $res->withRedirect('/');
         }
         $response = $next($req, $res);

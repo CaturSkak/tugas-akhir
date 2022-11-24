@@ -2,10 +2,6 @@
 
 namespace App\Controller;
 
-use Medoo\Medoo;
-// use Middleware\Auth;
-// use PHPUnit\Framework\Constraint\Count;
-
 class AuthController
 {
     //buat function index()
@@ -81,24 +77,28 @@ class AuthController
         } else {
             $_SESSION['username'] = $username = $log['username'];
 
-            $data = $app->db->select('tbl_mahasiswa', [
-                "[><]tbl_jurusan" => ["id_jurusan" => "jurusan_id"]
-            ], [
-                'id',
-                'nama',
-                'jenis_kelamin',
-                'kota',
-                'jurusan'
-            ]);
-            $jurusan = $app->db->select('tbl_jurusan', '*');
+            // $data = $app->db->select('tbl_mahasiswa', [
+            //     "[><]tbl_jurusan" => ["id_jurusan" => "jurusan_id"]
+            // ], [
+            //     'id',
+            //     'nama',
+            //     'jenis_kelamin',
+            //     'kota',
+            //     'jurusan'
+            // ]);
+            // $jurusan = $app->db->select('tbl_jurusan', '*');
             // var_dump($data);
             // die();
-            $app->view->render($rsp, 'index.html', [
-                'hasvalidate' => true,
-                'username' => $_SESSION['username'],
-                'data'   => $data,
-                'jurusan' => $jurusan
-            ]);
+            $_SESSION['admin']=$valid;
+            $_SESSION['hasvalidate'] = true;
+            return $rsp->withRedirect('/');
+
+            // $app->view->render($rsp, 'index.html', [
+            //     'hasvalidate' => true,
+            //     'username' => $_SESSION['username'],
+            //     'data'   => $data,
+            //     'jurusan' => $jurusan
+            // ]);
         }
     }
 }
