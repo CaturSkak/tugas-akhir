@@ -120,7 +120,7 @@ return function (App $app) {
 
         // Render index view
         return ContactController::index($this, $request, $response,  $args);
-    })->add(new Auth());
+    });
 
     
 };

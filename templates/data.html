@@ -57,7 +57,6 @@
 
       <div class="row" id="demo">
         <div id="reload" class="table-responsive">
-
           <table class="table display" id="data_v2">
             <thead>
               <tr>
@@ -66,7 +65,9 @@
                 <th scope="col">Jenis Kelamin</th>
                 <th scope="col">Kota</th>
                 <th scope="col">Jurusan</th>
-                <th style="text-align: right;" scope="col">Aksi</th>
+                {% if id.tipe %}
+                <th style="text-align: right;" scope="col">Aksi</th>                
+                {% endif %}
               </tr>
             </thead>
             <tbody id="show_data">

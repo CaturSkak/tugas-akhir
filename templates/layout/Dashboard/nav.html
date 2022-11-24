@@ -22,13 +22,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/#">Home</a>
                     </li>
-                    {% if username is not null %}
                     <li class=" nav-item">
                         <a class="nav-link " href="/#section_2">About</a>
                     </li>
                     <li class=" nav-item">
                         <a class="nav-link " href="/Contact">Contact</a>
                     </li>
+                    {% if username is not null %}
+                    
                     <li class=" nav-item">
                         <a class="nav-link " href="/Data">Data</a>
                     </li>
@@ -40,7 +41,7 @@
 
                     <li class="nav-item">
                         {% if username is null %}
-                        <button type="button" class="btn"><a class="nav-link" href="/login">Login</a></button>
+                        <a type="button" class="btn nav-link" href="/login">Login</a></button>
                         {% else %}
                         <a type="button" class="btn nav-link" href="/logout">Logout</a></button>
                         {% endif %}

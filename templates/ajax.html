@@ -1,6 +1,25 @@
 {% block ajax %}
 {# {{Tabel}} #}
 <script type="text/javascript">
+    function get_cookie(cookie_name) {
+        let c_name = cookie_name + "=";
+        let cookie_decoded = decodeURIComponent(document.cookie);
+        let cookie_parts = cookie_decoded.split(';');
+        
+        for(let i = 0; i <cookie_parts.length; i++) {
+            let c = cookie_parts[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(c_name) == 0) {
+                return c.substring(c_name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    php = get_cookie('PHPSESSID');
+
     $(document).ready(function () {
         const editModal = document.getElementById('ModalaEdit')
         const editInput = document.getElementById('name')
@@ -12,7 +31,27 @@
         insertModal.addEventListener('shown.bs.modal',()=>{
             insertInput.focus();
         })
-
+        console.log(typeof php)
+        if(php != ''){
+            columns = [
+                { "width": "1%", "targets": 0, className: "text-center","orderable": false },
+                { "width": "10%", "targets": 1, className: "text-start","orderable": false },
+                { "width": "10%", "targets": 2,className: "text-start","orderable": false },
+                { "width": "10%", "targets": 3, className: "text-start","orderable": false },
+                { "width": "10%", "targets": 4,className: "text-start","orderable": false },
+                { "width": "15%", "targets": 5,className: "text-end","orderable": false }
+    
+            ]
+        }else{
+            columns = [
+                { "width": "1%", "targets": 0, className: "text-center","orderable": false },
+                { "width": "10%", "targets": 1, className: "text-start","orderable": false },
+                { "width": "10%", "targets": 2,className: "text-start","orderable": false },
+                { "width": "10%", "targets": 3, className: "text-start","orderable": false },
+                { "width": "10%", "targets": 4,className: "text-start","orderable": false }
+            ]
+        }
+        console.log(columns)
         initTable = function(){
             
             table = $("#data_v2").on('preXhr.dt', function ( e, settings, data ) {
@@ -23,14 +62,7 @@
                     console.log('dapat data');
     
                 }).DataTable({
-                "columnDefs": [
-                    { "width": "1%", "targets": 0, className: "text-center","orderable": false },
-                    { "width": "10%", "targets": 1, className: "text-start","orderable": false },
-                    { "width": "10%", "targets": 2,className: "text-start","orderable": false },
-                    { "width": "10%", "targets": 3, className: "text-start","orderable": false },
-                    { "width": "10%", "targets": 4,className: "text-start","orderable": false },
-                    { "width": "15%", "targets": 5,className: "text-end","orderable": false }
-                ],
+                "columnDefs": columns,
                 'pageLength': 10,
                 'processing': true,
                 'serverSide': true,
