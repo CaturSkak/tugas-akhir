@@ -1,12 +1,14 @@
 <header>
     <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top shadow-lg">
         <div class="container">
-
-            <img src="https://www.botecodigital.dev.br/wp-content/uploads/2021/03/slim.png"
-                style="width: 70px; height:40px; object-fit: cover;" class="logo img-fluid" alt="">
+            <div>
+                <img src="https://technext.github.io/KindHeart/images/logo.png"
+              class="logo img-fluid" alt="">
+            </div>
+           
             <span>
-                Slim
-                <small>Framework</small>
+                Eilm 
+                <small>Heart</small>
             </span>
             </a>
 
@@ -18,23 +20,29 @@
             <div class="collapse navbar-collapse text-center" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
+                        <a class="nav-link" href="/#">Home</a>
                     </li>
                     {% if username is not null %}
+                    <li class=" nav-item">
+                        <a class="nav-link " href="/#section_2">About</a>
+                    </li>
+                    <li class=" nav-item">
+                        <a class="nav-link " href="/Contact">Contact</a>
+                    </li>
                     <li class=" nav-item">
                         <a class="nav-link " href="/Data">Data</a>
                     </li>
 
                     <li class=" nav-item">
-                        <a class="nav-link">{{username}}</a>
+                        <a class="nav-link"><i class="fa fa-user-circle-o" aria-hidden="true"></i> {{username}}</a>
                     </li>
                     {% endif %}
 
                     <li class="nav-item">
                         {% if username is null %}
-                        <button type="button" class="btn"><a href="/login">Login</a></button>
+                        <button type="button" class="btn"><a class="nav-link" href="/login">Login</a></button>
                         {% else %}
-                        <button type="button" class="btn"><a href="/logout">Logout</a></button>
+                        <a type="button" class="btn nav-link" href="/logout">Logout</a></button>
                         {% endif %}
                     </li>
 

@@ -8,6 +8,7 @@ use App\Middleware\isLogin;
 use App\Controller\AuthController;
 use App\Controller\DashboardController;
 use App\Controller\DataController;
+use App\Controller\ContactController;
 
 
 
@@ -114,6 +115,12 @@ return function (App $app) {
             'data' => $data
         ]);
     });
+
+    $app->get('/Contact', function (Request $request, Response $response, array $args) use ($container) {
+
+        // Render index view
+        return ContactController::index($this, $request, $response,  $args);
+    })->add(new Auth());
 
     
 };

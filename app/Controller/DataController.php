@@ -142,8 +142,8 @@ class DataController
                 $datas['jurusan'] = $m['jurusan'];
                 
                 if($_SESSION['admin']['tipe'] == 1){
-                    $datas['aksi'] = '<button type="button" class="btn btn-warning item_edit" data="'.$m['id'].'">Ubah</button> 
-                    <button type="button" class="btn btn-danger item_hapus " data="'.$m['id'].'">Delete</button>';
+                    $datas['aksi'] = '<button type="button" class="btn btn-warning item_edit" data="'.$m['id'].'"><span class="fa fa-pencil-square-o"></span> Ubah</button> 
+                    <button type="button" class="btn btn-danger item_hapus " data="'.$m['id'].'"><span class="fa fa-trash-o"></span> Delete</button>';
                 }else{
                     $datas['aksi'] = '';
                 }
