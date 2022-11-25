@@ -1,0 +1,53 @@
+{% block alert2 %}
+{{ hasvalidate }}
+
+{# <p>sdasda</p> #}
+{% if hasvalidate == true %}
+<script>
+
+  let timerInterval
+  Swal.fire({
+    title: 'Memuat Data...',
+    html: 'Tunggu  <b></b>  Detik.',
+    timer: 400,
+    timerProgressBar: true,
+    didOpen: () => {
+      Swal.showLoading()
+      const b = Swal.getHtmlContainer().querySelector('b')
+      timerInterval = setInterval(() => {
+        b.textContent = Swal.getTimerLeft()
+      }, 100)
+    },
+    willClose: () => {
+      clearInterval(timerInterval)
+    }
+  }).then((result) => {
+    Swal.fire(
+      {
+        icon: 'success',
+        title: 'Berhasil',
+        text: 'Data telah ditambahkan.',
+      }
+
+    )
+
+  })
+</script>
+
+{% elseif notvalidate == true %}
+<script>
+  Swal.fire(
+      {
+        icon: 'error',
+        title: 'Gagal',
+        text: 'Data sudah ada.',
+      }
+
+    )
+    
+</script>
+{% else %}
+
+
+{% endif %}
+{% endblock alert2 %}

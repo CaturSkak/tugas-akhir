@@ -3,9 +3,8 @@
 namespace App\Controller;
 
 use App\Model\MahasiswaModel;
-use LimitIterator;
 
-class DataController
+class AdminController
 {
     //buat function index()
     public static function index($app, $req, $rsp, $args)
@@ -16,30 +15,27 @@ class DataController
         $id = $app->db->get('tbl_pengguna', '*', [
             "username" => $username
         ]);
-        $data = $app->db->select('tbl_mahasiswa', [
-            "[><]tbl_jurusan" => ["id_jurusan" => "jurusan_id"]
+        $data = $app->db->select('tbl_pengguna', [
+            "[><]tbl_tipe_pengguna" => ["tipe" => "tipe_id"]
         ], [
-            'id',
-            'nama',
-            'jenis_kelamin',
-            'kota',
-            'jurusan',
+            'user_id',
+            'first_name',
+            'last_name',
+            'username',
+            'tipe',
+            'pengguna'
         ]);
         // var_dump($data);
-        $jurusan = $app->db->select('tbl_jurusan', '*');
+        // $pengguna = $app->db->select('tbl_pengguna', '*');
 
-        $hasvalidate = isset($_SESSION['hasvalidate']);
-        unset($_SESSION['hasvalidate']);
-        $notvalidate = isset($_SESSION['notvalidate']);
-        unset($_SESSION['notvalidate']);
+        
+   
 
-        $app->view->render($rsp, 'data.html', [
+        $app->view->render($rsp, 'admin.html', [
             'username' => $_SESSION['username'],
             'id'     => $id,
             'data'   => $data,
-            'jurusan' => $jurusan,
-            'hasvalidate' => $hasvalidate,
-            'notvalidate' => $notvalidate
+          
         ]);
     }
 
@@ -48,8 +44,8 @@ class DataController
         $id = $args['data'];
 
 
-        $del = $app->db->delete('tbl_mahasiswa', [
-            "id" => $id
+        $del = $app->db->delete('tbl_pengguna', [
+            "user_id" => $id
         ]);
 
         // return $rsp->withJson($del);
@@ -63,20 +59,19 @@ class DataController
     {
         $id = $args['data'];
 
-
-
-        $select = $app->db->select('tbl_mahasiswa', [
-            "[><]tbl_jurusan" => ["id_jurusan" => "jurusan_id"]
+        $select = $app->db->select('tbl_pengguna', [
+            "[><]tbl_tipe_pengguna" => ["tipe" => "tipe_id"]
         ], [
-            'id',
-            'nama',
-            'jenis_kelamin',
-            'kota',
-            'jurusan',
-            'id_jurusan'
+            'user_id',
+            'username',
+            'first_name',
+            'last_name',
+            'tipe',
+            'pengguna'
         ], [
-            "tbl_mahasiswa.id" => $id
+            "tbl_pengguna.user_id" => $id
         ]);
+
         return $rsp->withJson($select);
         // return $rsp->withJson($data);
 
@@ -86,14 +81,14 @@ class DataController
     public static function tampil_data($app, $req, $rsp, $args)
     {
 
-        $data = $app->db->select('tbl_mahasiswa', [
-            "[><]tbl_jurusan" => ["id_jurusan" => "jurusan_id"]
+        $data = $app->db->select('tbl_pengguna', [
+            "[><]tbl_tipe_pengguna" => ["tipe" => "tipe_id"]
         ], [
-            'id',
-            'nama',
-            'jenis_kelamin',
-            'kota',
-            'jurusan',
+            'user_id',
+            'username',
+            'first_name',
+            'last_name',
+            'pengguna'
         ]);
 
 
@@ -110,7 +105,7 @@ class DataController
         $dir = $req->getParam('order');
         $dir = $dir[0]['dir'];
 
-        $req->getParam('jurusan');
+        // $req->getParam('jurusan');
 
         $conditions = [
             "LIMIT" => [$start, $limit]
@@ -119,33 +114,23 @@ class DataController
         if (!empty($req->getParam('search')['value'])) {
             $search = $req->getParam('search')['value'];
             $conditions['OR'] = [
-                'tbl_mahasiswa.nama[~]' => '%' . $search . '%',
-                'tbl_mahasiswa.jenis_kelamin[~]' => '%' . $search . '%',
-                'tbl_mahasiswa.kota[~]' => '%' . $search . '%',
-                'tbl_jurusan.jurusan[~]' => '%' . $search . '%',
+                'tbl_pengguna.username[~]' => '%' . $search . '%',
+                'tbl_pengguna.first_name[~]' => '%' . $search . '%',
+                'tbl_pengguna.last_name[~]' => '%' . $search . '%',
+                'tbl_pengguna.pengguna[~]' => '%' . $search . '%',
             ];
-            $data = $app->db->select('tbl_mahasiswa', [
-                "[><]tbl_jurusan" => ["id_jurusan" => "jurusan_id"]
-            ], [
-                'id',
-                'nama',
-                'jenis_kelamin',
-                'kota',
-                'jurusan',
-            ], ['LIMIT' => $start, $limit]);
-            $totaldata = count($data);
-            $totalfiltered = $totaldata;
         }
 
-        $mahasiswa = $app->db->select('tbl_mahasiswa', [
-            "[><]tbl_jurusan" => ["id_jurusan" => "jurusan_id"]
+        $mahasiswa = $app->db->select('tbl_pengguna', [
+            "[><]tbl_tipe_pengguna" => ["tipe" => "tipe_id"]
         ], [
-            'id',
-            'nama',
-            'jenis_kelamin',
-            'kota',
-            'jurusan',
-        ], $conditions);
+            'user_id',
+            'username',
+            'first_name',
+            'last_name',
+            'pengguna'
+        ]
+        , $conditions);
 
         $data = array();
 
@@ -154,17 +139,14 @@ class DataController
             foreach ($mahasiswa as $m) {
 
                 $datas['no'] = $no . '.';
-                $datas['nama'] = $m['nama'];
-                $datas['jenis_kelamin'] = $m['jenis_kelamin'];
-                $datas['kota'] = $m['kota'];
-                $datas['jurusan'] = $m['jurusan'];
-
-                if ($_SESSION['admin']['tipe'] == 1) {
-                    $datas['aksi'] = '<button type="button" class="btn btn-warning item_edit" data="' . $m['id'] . '"><span class="fa fa-pencil-square-o"></span> Ubah</button> 
-                    <button type="button" class="btn btn-danger item_hapus " data="' . $m['id'] . '"><span class="fa fa-trash-o"></span> Delete</button>';
-                } else {
-                    $datas['aksi'] = '';
-                }
+                $datas['username'] = $m['username'];
+                $datas['first_name'] = $m['first_name'];
+                $datas['last_name'] = $m['last_name'];
+                $datas['pengguna'] = $m['pengguna'];
+                $datas['aksi'] = 
+                    '<button type="button" class="btn btn-warning item_edit" data="' . $m['user_id'] . '"><span class="fa fa-pencil-square-o"></span> Ubah</button> 
+                    <button type="button" class="btn btn-danger item_hapus " data="' . $m['user_id'] . '"><span class="fa fa-trash-o"></span> Delete</button>';
+                
 
                 $data[] = $datas;
                 $no++;
@@ -186,7 +168,7 @@ class DataController
 
         $reg = $args['tambah'];
 
-        MahasiswaModel::insert($app->db, $reg);
+        $app->db->insert('tbl_pengguna',$reg);
 
         $json_data = array(
             "draw"            => intval($req->getParam('draw')),
@@ -204,14 +186,14 @@ class DataController
         $kota = $reg['tambah_kota'];
         $jurusan = $reg['tambah_jurusan'];
         
-        $nama_db = $app->db->select('tbl_mahasiswa', '*', [
+        $nama_db = $app->db->select('tbl_pengguna', '*', [
             'nama' => $nama
         ]);
         // var_dump($nama);
         // die();
         if ($nama_db == null) {
             $data = $app->db->insert(
-                'tbl_mahasiswa',[
+                'tbl_pengguna',[
                     'nama' => $nama,
                     'jenis_kelamin' => $jenis_kelamin,
                     'kota' => $kota,
@@ -231,20 +213,21 @@ class DataController
 
         $reg = $args['data'];
         // return var_dump($reg);
-        $id = $reg['id'];
-        $nama = $reg['nama'];
-        $jenis_kelamin = $reg['jenis_kelamin'];
-        $kota = $reg['kota'];
-        $id_jurusan = $reg['id_jurusan'];
+        $id = $reg['user_id'];
+        $username = $reg['username'];
+        $first_name = $reg['first_name'];
+        $last_name = $reg['last_name'];
+        $tipe_pengguna = $reg['tipe_pengguna'];
 
-        $user_awal = $app->db->update('tbl_mahasiswa', [
-            'nama' => $nama,
-            'jenis_kelamin' => $jenis_kelamin,
-            'kota' => $kota,
-            'id_jurusan' => $id_jurusan,
+        $user_awal = $app->db->update('tbl_pengguna', [
+            'username' => $username,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'tipe' => $tipe_pengguna,
         ], [
-            'id' => $id
+            'user_id' => $id
         ]);
+        // return var_dump($first_name);
         $json_data = array(
             "draw"            => intval($req->getParam('draw')),
         );

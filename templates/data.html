@@ -1,43 +1,14 @@
-{# Komentar #}
+  {# Komentar #}
 {% extends "layout/Dashboard/master.html" %}
 
 {% set title = "Volunteer - Eilm Heart" %}
 
 {% block content %}
 
-{% if hasvalidate == true %}
-<script>
 
-  let timerInterval
-  Swal.fire({
-    title: 'Memuat Data...',
-    html: 'Tunggu  <b></b>  Detik.',
-    timer: 400,
-    timerProgressBar: true,
-    didOpen: () => {
-      Swal.showLoading()
-      const b = Swal.getHtmlContainer().querySelector('b')
-      timerInterval = setInterval(() => {
-        b.textContent = Swal.getTimerLeft()
-      }, 100)
-    },
-    willClose: () => {
-      clearInterval(timerInterval)
-    }
-  }).then((result) => {
-    Swal.fire(
-      {
-        icon: 'success',
-        title: 'Berhasil',
-        text: 'Data telah ditambahkan.',
-        //footer: '<a href="">Why do I have this issue?</a>'
-      }
 
-    )
 
-  })
-</script>
-{% endif %}
+
 
 
 <div class="text-center bg-dark text-white py-5 mt-5 bg-img">
@@ -91,10 +62,10 @@
 
           <button type="submit" class="form-control  bg-primary text-white " id="">Submit</button>
         </form>
-      </div>
+      </div>  
 
       <div class="col-lg-6 col-12 py-5 text-center">
-        <img src="img/foto/aku.jpg" class="volunteer-image img-fluid" alt="">
+        <img src="img/foto/aku.jpg" class="volunteer-image img-fluid  mx-auto my-auto" alt="">
 
         <div class="custom-block-body text-center">
           <h4 class=" mt-lg-3 mb-lg-3">Tentang Volunteer</h4>
@@ -160,6 +131,10 @@
 
 
 
+{% include "alert2.html" %}
+{% block alert2 %}
+
+{% endblock alert2 %}
 
 {% include "modal.html" %}
 {% block modal %}

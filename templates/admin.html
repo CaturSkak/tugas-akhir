@@ -1,0 +1,82 @@
+{# Komentar #}
+{% extends "layout/Dashboard/master.html" %}
+
+{% set title = "Data Pengguna - Eilm Heart" %}
+
+{% block content %}
+
+
+
+
+
+
+
+<div class="text-center bg-dark text-white py-5 mt-5 bg-img">
+  <h1 class="display-1">Data Pengguna</h1>
+  <p class="text-white">Eilm Heart Univeritas Miku</p>
+</div>
+
+
+
+<section class="section py-5 " id="Data">
+  <div class="container">
+    <div class="row bg-light shadow-lg py-5">
+
+      <div class="col-lg-12 col-12 text-center mb-4">
+        <h2>Data Pengguna</h2>
+
+      </div>
+        <div class="position-relative ">
+          <div class="text-center my-3 mx-3"><a href="#" class="btn btn-sm btn-success " data-bs-toggle="modal"
+              data-bs-target="#ModalaAdd"><span class="fa fa-plus"></span> Tambah Data</a>
+          </div>
+
+        </div>
+
+      <div class="row" id="demo">
+        <div id="reload" class="table-responsive">
+          <table class="table display" id="data">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Username</th>
+                <th scope="col">Nama Depan</th>
+                <th scope="col">Nama Belakang</th>
+                <th scope="col">Pengguna</th>
+                <th style="text-align: right;" scope="col">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="show_data">
+
+            </tbody>
+          </table>
+
+
+        </div>
+      </div>
+
+
+
+
+    </div>
+
+  </div>
+</section>
+
+
+
+
+
+
+{% include "modaladmin.html" %}
+{% block modal %}
+
+{% endblock modal %}
+
+{% include "ajaxadmin.html" %}
+{% block ajax %}
+
+{% endblock ajax %}
+
+
+{% endblock content%}

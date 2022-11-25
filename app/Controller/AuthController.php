@@ -33,17 +33,19 @@ class AuthController
         $last_name = $reg['last_name'];
         $username = $reg['username'];
         $password = md5($reg['password']);
+        $tipe = 2;
 
         $user_awal = $app->db->select('tbl_admin', '*', [
             'username' => $username
         ]);
         // return var_dump($user_awal);
         if ($user_awal == null) {
-            $app->db->insert('tbl_admins', [
+            $app->db->insert('tbl_pengguna', [
                 'username' => $username,
                 'first_name' => $first_name,
                 'last_name' => $last_name,
-                'password' => $password
+                'password' => $password,
+                'tipe' => $tipe
             ]);
             $app->view->render($rsp, 'login.html', [
                 'hasRegistered' => true
@@ -65,7 +67,7 @@ class AuthController
         // return var_dump($password);
 
 
-        $valid = $app->db->get('tbl_admins', '*', [
+        $valid = $app->db->get('tbl_pengguna', '*', [
             "username" => $username,
             "password" => $password
         ]);

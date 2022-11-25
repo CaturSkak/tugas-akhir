@@ -11,7 +11,7 @@ class DashboardController
         // var_dump($_SESSION['admin']['tipe']);
         $username = $_SESSION['username'];
 
-        $id = $app->db->get('tbl_admins', '*', [
+        $id = $app->db->get('tbl_pengguna', '*', [
             "username" => $username
         ]);
         $data = $app->db->select('tbl_mahasiswa', [

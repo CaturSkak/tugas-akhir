@@ -27,6 +27,11 @@
                     <li class=" nav-item">
                         <a class="nav-link " href="/Contact">Contact</a>
                     </li>
+                    {% if id.tipe == 1 %}
+                    <li class=" nav-item">
+                        <a class="nav-link " href="/Data_Pengguna">Data Pengguna</a>
+                    </li>
+                    {% endif %}
                     {% if username is not null %}
 
                     <li class=" nav-item">
@@ -37,6 +42,7 @@
                         <a class="nav-link"><i class="fa fa-user-circle-o" aria-hidden="true"></i> {{username}}</a>
                     </li>
                     {% endif %}
+                    
 
                     <li class="nav-item">
                         {% if username is null %}

@@ -18,7 +18,6 @@
         return "";
     }
 
-    php = get_cookie('PHPSESSID');
 
     $(document).ready(function () {
         const editModal = document.getElementById('ModalaEdit')
@@ -34,7 +33,7 @@
         
         initTable = function () {
 
-            table = $("#data_v2").on('preXhr.dt', function (e, settings, data) {
+            table = $("#data").on('preXhr.dt', function (e, settings, data) {
 
                 console.log('loading ....');
 
@@ -48,26 +47,24 @@
                     { "width": "10%", "targets": 2, className: "text-start", "orderable": false },
                     { "width": "10%", "targets": 3, className: "text-start", "orderable": false },
                     { "width": "10%", "targets": 4, className: "text-start", "orderable": false },
-                    { "width": "15%", "targets": 5, className: "text-end", "orderable": false }
+                    { "width": "10%", "targets": 5, className: "text-start", "orderable": false },
     
                 ],
                 'pageLength': 10,
                 'processing': true,
                 'serverSide': true,
                 'ajax': {
-                    'url': "/tampil-data",
+                    'url': "/tampil-admin",
                     'dataType:': 'json',
-                    'type': 'get',
-                    'data': function (d) {
-                        //d.jurusan = ;
-                    },
+                    'type': 'get'
+                   
                 },
                 'columns': [
                     { 'data': 'no' },
-                    { 'data': 'nama' },
-                    { 'data': 'jenis_kelamin' },
-                    { 'data': 'kota' },
-                    { 'data': 'jurusan' },
+                    { 'data': 'username' },
+                    { 'data': 'first_name' },
+                    { 'data': 'last_name' },
+                    { 'data': 'pengguna' },
                     { 'data': 'aksi' }
 
                 ]
@@ -84,17 +81,17 @@
             var id = $(this).attr('data');
             $.ajax({
                 type: "GET",
-                url: "/" + id + "/select",
+                url: "/" + id + "/selectadmin",
                 dataType: "JSON",
                 data: { id: id },
                 success: function (data) {
-                    $.each(data, function (id, nama, jenis_kelamin, kota, jurusan) {
+                    $.each(data, function (id, username, first_name, last_name, pengguna) {
                         $('#ModalaEdit').modal('show');
-                        $('[name="id"]').val(data[0].id);
-                        $('[name="name"]').val(data[0].nama);
-                        $('[name="kelamin"]').val(data[0].jenis_kelamin);
-                        $('[name="kta"]').val(data[0].kota);
-                        $('[name="jrs"]').val(data[0].id_jurusan);
+                        $('[name="id"]').val(data[0].user_id);
+                        $('[name="username"]').val(data[0].username);
+                        $('[name="first_name"]').val(data[0].first_name);
+                        $('[name="last_name"]').val(data[0].last_name);
+                        $('[name="tipe_pengguna"]').val(data[0].tipe);
                     });
                 }
             });
@@ -111,17 +108,18 @@
         });
 
         //Simpan Data
-        $('#btn_simpan').on('click', function () {
-            var nama = $('#tambah_nama').val();
-            var jenis_kelamin = $('#tambah_kelamin').val();
-            var kota = $('#tambah_kota').val();
-            var id_jurusan = $('#tambah_jurusan').val();
+        $('#ibtn_simpan').on('click', function () {
+            var username = $('#iusername').val();
+            var first_name = $('#ifirst_name').val();
+            var last_name = $('#ilast_name').val();
+            var tipe = $('#tipe').val();
             $.ajax({
                 type: "POST",
-                url: "tambah-data",
+                url: "tambah-data-admin",
                 dataType: "JSON",
-                data: { nama: nama, jenis_kelamin: jenis_kelamin, kota: kota, id_jurusan: id_jurusan },
+                data: { user_id: id, username:  username, first_name: first_name, last_name: last_name, tipe: tipe },
                 success: function (data) {
+                    console.log(data);
                     if (data) {
                         $('#ModalaAdd').modal('hide');
                         let timerInterval
@@ -175,15 +173,15 @@
         //Update Barang
         $('#btn_update').click(function (e) {
             var id = $('#id').val();
-            var nama = $('#name').val();
-            var jenis_kelamin = $('#kelamin').val();
-            var kota = $('#kta').val();
-            var id_jurusan = $('#jrs').val();
+            var username = $('#username').val();
+            var first_name = $('#first_name').val();
+            var last_name = $('#last_name').val();
+            var tipe_pengguna = $('#tipe_pengguna').val();
             $.ajax({
                 type: "POST",
-                url: "/ubah",
+                url: "/ubahadmin",
                 dataType: "JSON",
-                data: { id: id, nama: nama, jenis_kelamin: jenis_kelamin, kota: kota, id_jurusan: id_jurusan },
+                data: { user_id: id, username:  username, first_name: first_name, last_name: last_name, tipe_pengguna: tipe_pengguna },
                 success: function (data) {
                     if (data) {
                         $('#ModalaEdit').modal('hide');
@@ -234,7 +232,7 @@
             var kode = $('#textkode').val();
             $.ajax({
                 type: "POST",
-                url: "/delete",
+                url: "/delete-admin",
                 dataType: "JSON",
                 data: { kode: kode },
                 success: function (data) {

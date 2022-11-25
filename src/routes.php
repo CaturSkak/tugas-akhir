@@ -9,6 +9,7 @@ use App\Controller\AuthController;
 use App\Controller\DashboardController;
 use App\Controller\DataController;
 use App\Controller\ContactController;
+use App\Controller\AdminController;
 
 
 
@@ -130,4 +131,45 @@ return function (App $app) {
         // Render index view
         return ContactController::index($this, $request, $response,  $args);
     });
+    $app->get('/Data_Pengguna', function (Request $request, Response $response, array $args) use ($container) {
+
+        // Render index view
+        return AdminController::index($this, $request, $response,  $args);
+    })->add(new Auth());
+
+    $app->get('/tampil-admin', function (Request $req, Response $response, array $args) use ($container) {
+
+        return AdminController::tampil_data($this, $req, $response,  $args);
+    });
+    $app->get('/{id}/selectadmin', function (Request $request, Response $response, array $args) use ($container) {
+        $data = $args['id'];
+        // return var_dump($data);
+        return AdminController::ubah_modal($this, $request, $response,  [
+            'data' => $data
+        ]);
+    });
+
+    $app->post('/ubahadmin', function (Request $request, Response $response, array $args) use ($container) {
+        $data = $request->getParsedBody();
+        return AdminController::ubah_data($this, $request, $response,  [
+            'data' => $data
+        ]);
+    });
+
+    $app->post('/delete-admin', function (Request $request, Response $response, array $args) use ($container) {
+        $data = $request->getParsedBody();
+        
+        return AdminController::delete($this, $request, $response,  [
+            'data' => $data
+        ]);
+    });
+    $app->post('/tambah-data-admin', function (Request $request, Response $response, array $args) use ($container) {
+        $tambah = $request->getParsedBody();
+
+        return var_dump($tambah);
+        return AdminController::tambah_data($this, $request, $response,  [
+            'tambah' => $tambah
+        ]);
+    });
+
 };
