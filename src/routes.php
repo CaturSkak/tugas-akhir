@@ -27,7 +27,7 @@ return function (App $app) {
 
         return $view;
     };
-    
+
     $app->get('/login', function (Request $request, Response $response, array $args) use ($container) {
 
         // Render index view
@@ -51,7 +51,7 @@ return function (App $app) {
 
     $app->post('/form-register', function (Request $request, Response $response, array $args) use ($container) {
         $reg = $request->getParsedBody();
-        // return var_dump($reg);
+        // retucrn var_dump($reg);
         return AuthController::form_register($this, $request, $response,  [
             'reg' => $reg
         ]);
@@ -74,18 +74,18 @@ return function (App $app) {
         return DataController::index($this, $request, $response,  $args);
     })->add(new Auth());
 
-    
 
-    
+
+
     $app->post('/delete', function (Request $request, Response $response, array $args) use ($container) {
         $data = $request->getParsedBody();
         // $del = $container->db->delete('tbl_mahasiswa', [
         //     "id" => $data
         // ]);
+        // return var_dump($data);
         return DataController::delete($this, $request, $response,  [
             'data' => $data
         ]);
-        return var_dump($data);
     });
     $app->get('/{id}/select', function (Request $request, Response $response, array $args) use ($container) {
         $data = $args['id'];
@@ -103,10 +103,19 @@ return function (App $app) {
             'tambah' => $tambah
         ]);
     });
-    
+
+    $app->post('/tambah', function (Request $request, Response $response, array $args) use ($container) {
+        $reg = $request->getParsedBody();
+        // return var_dump($reg);
+        return DataController::tambah($this, $request, $response,  [
+            'tambah' => $reg
+        ]);
+    });
+
+
     $app->get('/tampil-data', function (Request $req, Response $response, array $args) use ($container) {
-        
-         return DataController::tampil_data($this, $req, $response,  $args);
+
+        return DataController::tampil_data($this, $req, $response,  $args);
     });
 
     $app->post('/ubah', function (Request $request, Response $response, array $args) use ($container) {
@@ -121,6 +130,4 @@ return function (App $app) {
         // Render index view
         return ContactController::index($this, $request, $response,  $args);
     });
-
-    
 };

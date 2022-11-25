@@ -1,7 +1,7 @@
 {# Komentar #}
 {% extends "layout/Dashboard/master.html" %}
 
-{% set title = "Tugas AKhir - Twig" %}
+{% set title = "Volunteer - Eilm Heart" %}
 
 {% block content %}
 
@@ -25,34 +25,104 @@
       clearInterval(timerInterval)
     }
   }).then((result) => {
-    /* Read more about handling dismissals below */
-    if (result.dismiss === Swal.DismissReason.timer) {
-      console.log('I was closed by the timer')
-    }
+    Swal.fire(
+      {
+        icon: 'success',
+        title: 'Berhasil',
+        text: 'Data telah ditambahkan.',
+        //footer: '<a href="">Why do I have this issue?</a>'
+      }
+
+    )
+
   })
 </script>
-
 {% endif %}
 
 
 <div class="text-center bg-dark text-white py-5 mt-5 bg-img">
-    <h1 class="display-1">Data</h1>
-    <p class="text-white">Eilm Heart</p>
+  <h1 class="display-1">Data Volunteer</h1>
+  <p class="text-white">Eilm Heart Univeritas Miku</p>
 </div>
+
+<section class="py-5">
+  <div class="container ">
+    <div class="row bg-light shadow-lg  py-5">
+
+      <h2 class="text-center">Volunteer</h2>
+
+      <div class="col-lg-6 col-12 bg  ">
+
+        <form class="rounded custom-form volunteer-form bg-light mb-5 mb-lg-0" action="/tambah" method="POST">
+          <h2 class="text-center mb-4">Jadilah volunteer hari ini</h2>
+
+          <div class="row  ">
+            <div class="col-lg-6 col-12 ">
+              <input type="text" class="form-control bg-white " name="tambah_nama" placeholder="Nama" required>
+
+            </div>
+
+            <div class="col-lg-6 col-12">
+
+              <select class="form-select form-control bg-white" name="tambah_kelamin"
+                aria-label="Default select example">
+                <option selected>Pilih jenis kelamin</option>
+                <option value="Laki-laki">Laki-laki</option>
+                <option value="Perempuan">Perempuan</option>
+              </select>
+            </div>
+
+            <div class=" col-12">
+              <input type="text" class="form-control bg-white" name="tambah_kota" placeholder="Kota" required>
+            </div>
+
+            <div class=" col-12">
+              <select class="form-select form-control bg-white" name="tambah_jurusan"
+                aria-label="Default select example">
+                <option selected>Pilih jurusan</option>
+                {% for user in jurusan %}
+                <option value="{{user.jurusan_id}}">{{user.jurusan}}</option>
+                {% endfor %}
+
+              </select>
+            </div>
+
+          </div>
+
+          <button type="submit" class="form-control  bg-primary text-white " id="">Submit</button>
+        </form>
+      </div>
+
+      <div class="col-lg-6 col-12 py-5 text-center">
+        <img src="img/foto/aku.jpg" class="volunteer-image img-fluid" alt="">
+
+        <div class="custom-block-body text-center">
+          <h4 class=" mt-lg-3 mb-lg-3">Tentang Volunteer</h4>
+
+          <p class="text-black">Bersedia membantu baik fisik maupun materi untuk membantu manusia yang
+            membutuhkan atau untuk memperbaiki alam yang telah rusak</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 
 <section class="section py-5 " id="Data">
   <div class="container">
     <div class="row bg-light shadow-lg py-5">
 
       <div class="col-lg-12 col-12 text-center mb-4">
-        <h2>Data Mahasiswa</h2>
-      
+        <h2>Data Volunteer</h2>
+
       </div>
       <div class="position-relative ">
-
-        <div class="text-center my-3 mx-3"><a href="#" class="btn btn-sm btn-success "
-            data-bs-toggle="modal" data-bs-target="#ModalaAdd"><span class="fa fa-plus"></span> Tambah Data</a>
+        {% if id.tipe == 1%}
+        <div class="text-center my-3 mx-3"><a href="#" class="btn btn-sm btn-success " data-bs-toggle="modal"
+            data-bs-target="#ModalaAdd"><span class="fa fa-plus"></span> Tambah Data</a>
         </div>
+        {% endif %}
+
       </div>
 
       <div class="row" id="demo">
@@ -66,12 +136,12 @@
                 <th scope="col">Kota</th>
                 <th scope="col">Jurusan</th>
                 {% if id.tipe %}
-                <th style="text-align: right;" scope="col">Aksi</th>                
+                <th style="text-align: right;" scope="col">Aksi</th>
                 {% endif %}
               </tr>
             </thead>
             <tbody id="show_data">
-              
+
             </tbody>
           </table>
 

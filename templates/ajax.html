@@ -5,8 +5,8 @@
         let c_name = cookie_name + "=";
         let cookie_decoded = decodeURIComponent(document.cookie);
         let cookie_parts = cookie_decoded.split(';');
-        
-        for(let i = 0; i <cookie_parts.length; i++) {
+
+        for (let i = 0; i < cookie_parts.length; i++) {
             let c = cookie_parts[i];
             while (c.charAt(0) == ' ') {
                 c = c.substring(1);
@@ -23,54 +23,54 @@
     $(document).ready(function () {
         const editModal = document.getElementById('ModalaEdit')
         const editInput = document.getElementById('name')
-        editModal.addEventListener('shown.bs.modal',()=>{
+        editModal.addEventListener('shown.bs.modal', () => {
             editInput.focus();
         })
         const insertModal = document.getElementById('ModalaAdd')
         const insertInput = document.getElementById('tambah_nama')
-        insertModal.addEventListener('shown.bs.modal',()=>{
+        insertModal.addEventListener('shown.bs.modal', () => {
             insertInput.focus();
         })
         console.log(typeof php)
-        if(php != ''){
+        if (php != '') {
             columns = [
-                { "width": "1%", "targets": 0, className: "text-center","orderable": false },
-                { "width": "10%", "targets": 1, className: "text-start","orderable": false },
-                { "width": "10%", "targets": 2,className: "text-start","orderable": false },
-                { "width": "10%", "targets": 3, className: "text-start","orderable": false },
-                { "width": "10%", "targets": 4,className: "text-start","orderable": false },
-                { "width": "15%", "targets": 5,className: "text-end","orderable": false }
-    
+                { "width": "1%", "targets": 0, className: "text-center", "orderable": false },
+                { "width": "10%", "targets": 1, className: "text-start", "orderable": false },
+                { "width": "10%", "targets": 2, className: "text-start", "orderable": false },
+                { "width": "10%", "targets": 3, className: "text-start", "orderable": false },
+                { "width": "10%", "targets": 4, className: "text-start", "orderable": false },
+                { "width": "15%", "targets": 5, className: "text-end", "orderable": false }
+
             ]
-        }else{
+        } else {
             columns = [
-                { "width": "1%", "targets": 0, className: "text-center","orderable": false },
-                { "width": "10%", "targets": 1, className: "text-start","orderable": false },
-                { "width": "10%", "targets": 2,className: "text-start","orderable": false },
-                { "width": "10%", "targets": 3, className: "text-start","orderable": false },
-                { "width": "10%", "targets": 4,className: "text-start","orderable": false }
+                { "width": "1%", "targets": 0, className: "text-center", "orderable": false },
+                { "width": "10%", "targets": 1, className: "text-start", "orderable": false },
+                { "width": "10%", "targets": 2, className: "text-start", "orderable": false },
+                { "width": "10%", "targets": 3, className: "text-start", "orderable": false },
+                { "width": "10%", "targets": 4, className: "text-start", "orderable": false }
             ]
         }
         console.log(columns)
-        initTable = function(){
-            
-            table = $("#data_v2").on('preXhr.dt', function ( e, settings, data ) {
-                
+        initTable = function () {
+
+            table = $("#data_v2").on('preXhr.dt', function (e, settings, data) {
+
                 console.log('loading ....');
-    
-                }).on( 'draw.dt', function () {
-                    console.log('dapat data');
-    
-                }).DataTable({
+
+            }).on('draw.dt', function () {
+                console.log('dapat data');
+
+            }).DataTable({
                 "columnDefs": columns,
                 'pageLength': 10,
                 'processing': true,
                 'serverSide': true,
                 'ajax': {
-                    'url':"/tampil-data",
-                    'dataType:':'json',
-                    'type':'get',
-                    'data': function(d) {
+                    'url': "/tampil-data",
+                    'dataType:': 'json',
+                    'type': 'get',
+                    'data': function (d) {
                         //d.jurusan = ;
                     },
                 },
@@ -81,16 +81,17 @@
                     { 'data': 'kota' },
                     { 'data': 'jurusan' },
                     { 'data': 'aksi' }
-    
+
                 ]
             });
-            
+
         }
 
         initTable();
 
+
         //GET UPDATE
-        
+
         $('#show_data').on('click', '.item_edit', function () {
             var id = $(this).attr('data');
             $.ajax({
@@ -113,6 +114,7 @@
         });
 
 
+
         //GET HAPUS
         $('#show_data').on('click', '.item_hapus', function () {
             var id = $(this).attr('data');
@@ -120,7 +122,7 @@
             $('[name="kode"]').val(id);
         });
 
-        //Simpan Barang
+        //Simpan Data
         $('#btn_simpan').on('click', function () {
             var nama = $('#tambah_nama').val();
             var jenis_kelamin = $('#tambah_kelamin').val();
@@ -130,7 +132,7 @@
                 type: "POST",
                 url: "tambah-data",
                 dataType: "JSON",
-                data: { nama: nama, jenis_kelamin: jenis_kelamin, kota: kota , id_jurusan: id_jurusan},
+                data: { nama: nama, jenis_kelamin: jenis_kelamin, kota: kota, id_jurusan: id_jurusan },
                 success: function (data) {
                     if (data) {
                         $('#ModalaAdd').modal('hide');
@@ -158,23 +160,24 @@
                                     text: 'Data telah ditambahkan.',
                                     //footer: '<a href="">Why do I have this issue?</a>'
                                 }
-                                
-                                )
-                                $('#ModalaAdd').on('hidden.bs.modal', function(){
-                                    $(this).find('form')[0].reset();
-                                 });
-                              table.draw(false)
-                            })
-                            
-                          } else {
-                            Swal.fire({
-                              icon: 'error',
-                              title: 'Oops...',
-                              text: 'Ada yang eror!',
-                              //footer: '<a href="">Why do I have this issue?</a>'
-                            })
-                          }
-                   
+
+                            )
+                            $('#ModalaAdd').on('hidden.bs.modal', function () {
+                                $(this).find('form')[0].reset();
+                            });
+                            // $('form').get(0).reset()
+                            // table.draw(false)
+                        })
+
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ada yang eror!',
+                            //footer: '<a href="">Why do I have this issue?</a>'
+                        })
+                    }
+
                 }
             });
             return false;
@@ -191,7 +194,7 @@
                 type: "POST",
                 url: "/ubah",
                 dataType: "JSON",
-                data: { id: id, nama: nama, jenis_kelamin: jenis_kelamin, kota : kota, id_jurusan:id_jurusan },
+                data: { id: id, nama: nama, jenis_kelamin: jenis_kelamin, kota: kota, id_jurusan: id_jurusan },
                 success: function (data) {
                     if (data) {
                         $('#ModalaEdit').modal('hide');
@@ -218,20 +221,20 @@
                                     title: 'Berhasil',
                                     text: 'Data telah diubah.',
                                     //footer: '<a href="">Why do I have this issue?</a>'
-                                  }
-                              
+                                }
+
                             )
                         })
-                            
-                            table.draw(false)
-                          } else {
-                            Swal.fire({
-                              icon: 'error',
-                              title: 'Oops...',
-                              text: 'Ada yang eror!',
-                              //footer: '<a href="">Why do I have this issue?</a>'
-                            })
-                          }
+
+                        table.draw(false)
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ada yang eror!',
+                            //footer: '<a href="">Why do I have this issue?</a>'
+                        })
+                    }
                 }
             });
             return false;
@@ -247,47 +250,47 @@
                 data: { kode: kode },
                 success: function (data) {
                     if (data) {
-                    $('#ModalHapus').modal('hide');
-                    let timerInterval
-                    Swal.fire({
-                        title: 'Memuat Data...',
-                        html: 'Tunggu  <b></b>  Detik.',
-                        timer: 300,
-                        timerProgressBar: true,
-                        didOpen: () => {
-                            Swal.showLoading()
-                            const b = Swal.getHtmlContainer().querySelector('b')
-                            timerInterval = setInterval(() => {
-                                b.textContent = Swal.getTimerLeft()
-                            }, 100)
-                        },
-                        willClose: () => {
-                            clearInterval(timerInterval)
-                        }
-                    }).then((result) => {
-                        Swal.fire(
-                            {
-                                icon: 'success',
-                                title: 'Berhasil',
-                                text: 'Data telah dihapus.',
-                                //footer: '<a href="">Why do I have this issue?</a>'
-                              }
-                          
-                        )
-                    })
-                        
-                        table.draw(false)
-                      } else {
+                        $('#ModalHapus').modal('hide');
+                        let timerInterval
                         Swal.fire({
-                          icon: 'error',
-                          title: 'Oops...',
-                          text: 'Ada yang eror!',
-                          //footer: '<a href="">Why do I have this issue?</a>'
-                        })
-                      }
-                    
+                            title: 'Memuat Data...',
+                            html: 'Tunggu  <b></b>  Detik.',
+                            timer: 300,
+                            timerProgressBar: true,
+                            didOpen: () => {
+                                Swal.showLoading()
+                                const b = Swal.getHtmlContainer().querySelector('b')
+                                timerInterval = setInterval(() => {
+                                    b.textContent = Swal.getTimerLeft()
+                                }, 100)
+                            },
+                            willClose: () => {
+                                clearInterval(timerInterval)
+                            }
+                        }).then((result) => {
+                            Swal.fire(
+                                {
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: 'Data telah dihapus.',
+                                    //footer: '<a href="">Why do I have this issue?</a>'
+                                }
 
-                    
+                            )
+                        })
+
+                        table.draw(false)
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ada yang eror!',
+                            //footer: '<a href="">Why do I have this issue?</a>'
+                        })
+                    }
+
+
+
                     //tampil_data_barang();
                 }
             });

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+
 use App\Model\MahasiswaModel;
 
 class DataController
@@ -45,9 +46,13 @@ class DataController
         $del = $app->db->delete('tbl_mahasiswa', [
             "id" => $id
         ]);
-        return $rsp->withJson($del);
-        // return $rsp->withJson($data);
 
+        // return $rsp->withJson($del);
+        $json_data = array(
+            "draw"            => intval($req->getParam('draw')),
+        );
+
+        echo json_encode($json_data);
     }
     public static function ubah_modal($app, $req, $rsp, $args)
     {
@@ -72,7 +77,7 @@ class DataController
 
     }
 
-    
+
     public static function tampil_data($app, $req, $rsp, $args)
     {
 
@@ -85,12 +90,12 @@ class DataController
             'kota',
             'jurusan',
         ]);
-        
+
 
         $columns = array(
-            0 =>'id',
+            0 => 'id',
         );
-    
+
         $totaldata = count($data);
         $totalfiltered = $totaldata;
         $limit = $req->getParam('length');
@@ -105,18 +110,17 @@ class DataController
         $conditions = [
             "LIMIT" => [$start, $limit]
         ];
-    
-        if(!empty($req->getParam('search')['value']))
-        {
+
+        if (!empty($req->getParam('search')['value'])) {
             $search = $req->getParam('search')['value'];
             $conditions['OR'] = [
-                'tbl_mahasiswa.nama[~]' => '%'.$search.'%',
-                'tbl_mahasiswa.jenis_kelamin[~]' => '%'.$search.'%',
-                'tbl_mahasiswa.kota[~]' => '%'.$search.'%',
-                'tbl_jurusan.jurusan[~]' => '%'.$search.'%',
+                'tbl_mahasiswa.nama[~]' => '%' . $search . '%',
+                'tbl_mahasiswa.jenis_kelamin[~]' => '%' . $search . '%',
+                'tbl_mahasiswa.kota[~]' => '%' . $search . '%',
+                'tbl_jurusan.jurusan[~]' => '%' . $search . '%',
             ];
         }
-        
+
         $mahasiswa = $app->db->select('tbl_mahasiswa', [
             "[><]tbl_jurusan" => ["id_jurusan" => "jurusan_id"]
         ], [
@@ -125,41 +129,39 @@ class DataController
             'jenis_kelamin',
             'kota',
             'jurusan',
-        ],$conditions);
-    
+        ], $conditions);
+
         $data = array();
-    
-        if(!empty($mahasiswa))
-        {
+
+        if (!empty($mahasiswa)) {
             $no = $req->getParam('start') + 1;
-            foreach ($mahasiswa as $m)
-            {
-                
-                $datas['no'] = $no.'.';
+            foreach ($mahasiswa as $m) {
+
+                $datas['no'] = $no . '.';
                 $datas['nama'] = $m['nama'];
                 $datas['jenis_kelamin'] = $m['jenis_kelamin'];
                 $datas['kota'] = $m['kota'];
                 $datas['jurusan'] = $m['jurusan'];
-                
-                if($_SESSION['admin']['tipe'] == 1){
-                    $datas['aksi'] = '<button type="button" class="btn btn-warning item_edit" data="'.$m['id'].'"><span class="fa fa-pencil-square-o"></span> Ubah</button> 
-                    <button type="button" class="btn btn-danger item_hapus " data="'.$m['id'].'"><span class="fa fa-trash-o"></span> Delete</button>';
-                }else{
+
+                if ($_SESSION['admin']['tipe'] == 1) {
+                    $datas['aksi'] = '<button type="button" class="btn btn-warning item_edit" data="' . $m['id'] . '"><span class="fa fa-pencil-square-o"></span> Ubah</button> 
+                    <button type="button" class="btn btn-danger item_hapus " data="' . $m['id'] . '"><span class="fa fa-trash-o"></span> Delete</button>';
+                } else {
                     $datas['aksi'] = '';
                 }
-               
+
                 $data[] = $datas;
                 $no++;
             }
         }
-    
+
         $json_data = array(
-        "draw"            => intval($req->getParam('draw')),
-        "recordsTotal"    => intval($totaldata),
-        "recordsFiltered" => intval($totalfiltered),
-        "data"            => $data
+            "draw"            => intval($req->getParam('draw')),
+            "recordsTotal"    => intval($totaldata),
+            "recordsFiltered" => intval($totalfiltered),
+            "data"            => $data
         );
-    
+
         echo json_encode($json_data);
     }
 
@@ -169,13 +171,37 @@ class DataController
         $reg = $args['tambah'];
 
         MahasiswaModel::insert($app->db, $reg);
-        
+
         $json_data = array(
             "draw"            => intval($req->getParam('draw')),
-         
-            );
-        
+
+        );
+
         echo json_encode($json_data);
+    }
+    public static function tambah($app, $req, $rsp, $args)
+    {
+
+        $reg = $args['tambah'];
+        $nama = $reg['tambah_nama'];
+
+        $nama = $app->db->select('tbl_mahasiswa', '*', [
+            'nama' => $nama
+        ]);
+        // var_dump($nama);
+        // die();
+        if ($nama == null) {
+            $app->db->insert(
+                'tbl_mahasiswa',
+                $reg
+            );
+
+            $_SESSION['hasvalidate'] = true;
+            return $rsp->withRedirect('/Data');
+        } else {
+            $_SESSION['notvalidate'] = true;
+            return $rsp->withRedirect('/Data');
+        }
     }
 
     public static function ubah_data($app, $req, $rsp, $args)
@@ -199,9 +225,8 @@ class DataController
         ]);
         $json_data = array(
             "draw"            => intval($req->getParam('draw')),
-            );
-        
-            echo json_encode($json_data);
-       
+        );
+
+        echo json_encode($json_data);
     }
 }
