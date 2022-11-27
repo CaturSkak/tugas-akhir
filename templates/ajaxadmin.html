@@ -26,11 +26,11 @@
             editInput.focus();
         })
         const insertModal = document.getElementById('ModalaAdd')
-        const insertInput = document.getElementById('tambah_nama')
+        const insertInput = document.getElementById('iusername')
         insertModal.addEventListener('shown.bs.modal', () => {
             insertInput.focus();
         })
-        
+
         initTable = function () {
 
             table = $("#data").on('preXhr.dt', function (e, settings, data) {
@@ -47,17 +47,17 @@
                     { "width": "10%", "targets": 2, className: "text-start", "orderable": false },
                     { "width": "10%", "targets": 3, className: "text-start", "orderable": false },
                     { "width": "10%", "targets": 4, className: "text-start", "orderable": false },
-                    { "width": "10%", "targets": 5, className: "text-start", "orderable": false },
-    
+                    { "width": "10%", "targets": 5, className: "text-end", "orderable": false },
+
                 ],
                 'pageLength': 10,
                 'processing': true,
                 'serverSide': true,
                 'ajax': {
-                    'url': "/tampil-admin",
+                    'url': "tampil-admin",
                     'dataType:': 'json',
                     'type': 'get'
-                   
+
                 },
                 'columns': [
                     { 'data': 'no' },
@@ -112,14 +112,14 @@
             var username = $('#iusername').val();
             var first_name = $('#ifirst_name').val();
             var last_name = $('#ilast_name').val();
+            var password = $('#password').val();
             var tipe = $('#tipe').val();
             $.ajax({
                 type: "POST",
                 url: "tambah-data-admin",
                 dataType: "JSON",
-                data: { user_id: id, username:  username, first_name: first_name, last_name: last_name, tipe: tipe },
+                data: { username: username, first_name: first_name, last_name: last_name, password: password, tipe: tipe },
                 success: function (data) {
-                    console.log(data);
                     if (data) {
                         $('#ModalaAdd').modal('hide');
                         let timerInterval
@@ -181,7 +181,7 @@
                 type: "POST",
                 url: "/ubahadmin",
                 dataType: "JSON",
-                data: { user_id: id, username:  username, first_name: first_name, last_name: last_name, tipe_pengguna: tipe_pengguna },
+                data: { user_id: id, username: username, first_name: first_name, last_name: last_name, tipe_pengguna: tipe_pengguna },
                 success: function (data) {
                     if (data) {
                         $('#ModalaEdit').modal('hide');
