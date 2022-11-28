@@ -166,7 +166,7 @@ return function (App $app) {
     $app->post('/tambah-data-admin', function (Request $request, Response $response, array $args) use ($container) {
         $tambah = $request->getParsedBody();
 
-        return var_dump($tambah);
+        // return var_dump($tambah);
         return AdminController::tambah_data($this, $request, $response,  [
             'tambah' => $tambah
         ]);
