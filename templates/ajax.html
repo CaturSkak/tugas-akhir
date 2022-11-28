@@ -18,9 +18,9 @@
         return "";
     }
 
-    php = get_cookie('PHPSESSID');
 
     $(document).ready(function () {
+        
         const editModal = document.getElementById('ModalaEdit')
         const editInput = document.getElementById('name')
         editModal.addEventListener('shown.bs.modal', () => {
@@ -32,6 +32,8 @@
             insertInput.focus();
         })
 
+      
+
         initTable = function () {
 
             table = $("#data_v2").on('preXhr.dt', function (e, settings, data) {
@@ -42,6 +44,11 @@
                 console.log('dapat data');
 
             }).DataTable({
+                responsive: {
+                    details: {
+                        type: 'column'
+                    }
+                },
                 "columnDefs": [
                     { "width": "1%", "targets": 0, className: "text-center", "orderable": false },
                     { "width": "10%", "targets": 1, className: "text-start", "orderable": false },
@@ -52,6 +59,7 @@
 
                 ],
                 'pageLength': 10,
+                'responsive': true,
                 'processing': true,
                 'serverSide': true,
                 'ajax': {
@@ -69,12 +77,18 @@
                     { 'data': 'aksi' }
 
                 ]
+                
+        
             });
 
         }
 
         initTable();
 
+        //Cara Export
+        //dom: 'Bfrtip',
+        //buttons: [
+        // 'copy', 'csv', 'excel', 'pdf', 'print']
 
         //GET UPDATE
 
