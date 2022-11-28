@@ -10,7 +10,7 @@ class AdminController
     public static function index($app, $req, $rsp, $args)
     {
         $username = $_SESSION['username'];
-        
+
 
         $id = $app->db->get('tbl_pengguna', '*', [
             "username" => $username
@@ -28,14 +28,14 @@ class AdminController
         // var_dump($data);
         // $pengguna = $app->db->select('tbl_pengguna', '*');
 
-        
-   
+
+
 
         $app->view->render($rsp, 'admin.html', [
             'username' => $_SESSION['username'],
             'id'     => $id,
             'data'   => $data,
-          
+
         ]);
     }
 
@@ -93,7 +93,7 @@ class AdminController
 
 
         $columns = array(
-            0 => 'id',
+            0 => 'user_id',
         );
 
         $totaldata = count($data);
@@ -113,24 +113,46 @@ class AdminController
 
         if (!empty($req->getParam('search')['value'])) {
             $search = $req->getParam('search')['value'];
+            $limit = [
+                "LIMIT" => [$start, $limit]
+            ];
             $conditions['OR'] = [
                 'tbl_pengguna.username[~]' => '%' . $search . '%',
-                'tbl_pengguna.first_name[~]' => '%' . $search . '%',
-                'tbl_pengguna.last_name[~]' => '%' . $search . '%',
-                'tbl_pengguna.pengguna[~]' => '%' . $search . '%',
+
             ];
+            $data = $app->db->select(
+                'tbl_pengguna',
+                [
+                    "[><]tbl_tipe_pengguna" => ["tipe" => "tipe_id"]
+                ],
+                [
+                    'user_id',
+                    'username',
+                    'first_name',
+                    'last_name',
+                    'pengguna'
+                ],
+                $limit
+            );
+            $totaldata = count($data);
+            $totalfiltered = $totaldata;
         }
 
-        $mahasiswa = $app->db->select('tbl_pengguna', [
-            "[><]tbl_tipe_pengguna" => ["tipe" => "tipe_id"]
-        ], [
-            'user_id',
-            'username',
-            'first_name',
-            'last_name',
-            'pengguna'
-        ]
-        , $conditions);
+
+        $mahasiswa = $app->db->select(
+            'tbl_pengguna',
+            [
+                "[><]tbl_tipe_pengguna" => ["tipe" => "tipe_id"]
+            ],
+            [
+                'user_id',
+                'username',
+                'first_name',
+                'last_name',
+                'pengguna'
+            ],
+            $conditions
+        );
 
         $data = array();
 
@@ -143,10 +165,10 @@ class AdminController
                 $datas['first_name'] = $m['first_name'];
                 $datas['last_name'] = $m['last_name'];
                 $datas['pengguna'] = $m['pengguna'];
-                $datas['aksi'] = 
+                $datas['aksi'] =
                     '<button type="button" class="btn btn-warning item_edit" data="' . $m['user_id'] . '"><span class="fa fa-pencil-square-o"></span> Ubah</button> 
                     <button type="button" class="btn btn-danger item_hapus " data="' . $m['user_id'] . '"><span class="fa fa-trash-o"></span> Delete</button>';
-                
+
 
                 $data[] = $datas;
                 $no++;
@@ -167,8 +189,19 @@ class AdminController
     {
 
         $reg = $args['tambah'];
+        $username = $reg['username'];
+        $first_name = $reg['first_name'];
+        $last_name = $reg['last_name'];
+        $password = md5($reg['password']);
+        $tipe_pengguna = $reg['tipe'];
 
-        $app->db->insert('tbl_pengguna',$reg);
+        $app->db->insert('tbl_pengguna', [
+            'username' => $username,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'password' => $password,
+            'tipe' => $tipe_pengguna,
+        ]);
 
         $json_data = array(
             "draw"            => intval($req->getParam('draw')),
@@ -177,36 +210,7 @@ class AdminController
 
         echo json_encode($json_data);
     }
-    public static function tambah($app, $req, $rsp, $args)
-    {
 
-        $reg = $args['tambah'];
-        $nama = $reg['tambah_nama'];
-        $jenis_kelamin = $reg['tambah_kelamin'];
-        $kota = $reg['tambah_kota'];
-        $jurusan = $reg['tambah_jurusan'];
-        
-        $nama_db = $app->db->select('tbl_pengguna', '*', [
-            'nama' => $nama
-        ]);
-        // var_dump($nama);
-        // die();
-        if ($nama_db == null) {
-            $data = $app->db->insert(
-                'tbl_pengguna',[
-                    'nama' => $nama,
-                    'jenis_kelamin' => $jenis_kelamin,
-                    'kota' => $kota,
-                    'id_jurusan' => $jurusan
-                ]);
-                // return var_dump($data);
-            $_SESSION['hasvalidate'] = true;
-            return $rsp->withRedirect('/Data');
-        } else {
-            $_SESSION['notvalidate'] = true;
-            return $rsp->withRedirect('/Data');
-        }
-    }
 
     public static function ubah_data($app, $req, $rsp, $args)
     {

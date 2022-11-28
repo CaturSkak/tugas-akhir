@@ -158,7 +158,7 @@ return function (App $app) {
 
     $app->post('/delete-admin', function (Request $request, Response $response, array $args) use ($container) {
         $data = $request->getParsedBody();
-        
+
         return AdminController::delete($this, $request, $response,  [
             'data' => $data
         ]);
@@ -171,5 +171,4 @@ return function (App $app) {
             'tambah' => $tambah
         ]);
     });
-
 };

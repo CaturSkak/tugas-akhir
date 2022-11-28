@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Model\MahasiswaModel;
-use LimitIterator;
 
 class DataController
 {
@@ -11,7 +10,7 @@ class DataController
     public static function index($app, $req, $rsp, $args)
     {
         $username = $_SESSION['username'];
-        
+
 
         $id = $app->db->get('tbl_pengguna', '*', [
             "username" => $username
@@ -118,24 +117,33 @@ class DataController
 
         if (!empty($req->getParam('search')['value'])) {
             $search = $req->getParam('search')['value'];
+            $limit = [
+                "LIMIT" => [$start, $limit]
+            ];
             $conditions['OR'] = [
                 'tbl_mahasiswa.nama[~]' => '%' . $search . '%',
                 'tbl_mahasiswa.jenis_kelamin[~]' => '%' . $search . '%',
                 'tbl_mahasiswa.kota[~]' => '%' . $search . '%',
                 'tbl_jurusan.jurusan[~]' => '%' . $search . '%',
             ];
-            $data = $app->db->select('tbl_mahasiswa', [
-                "[><]tbl_jurusan" => ["id_jurusan" => "jurusan_id"]
-            ], [
-                'id',
-                'nama',
-                'jenis_kelamin',
-                'kota',
-                'jurusan',
-            ], ['LIMIT' => $start, $limit]);
+            $data = $app->db->select(
+                'tbl_mahasiswa',
+                [
+                    "[><]tbl_jurusan" => ["id_jurusan" => "jurusan_id"]
+                ],
+                [
+                    'id',
+                    'nama',
+                    'jenis_kelamin',
+                    'kota',
+                    'jurusan',
+                ],
+                $limit
+            );
             $totaldata = count($data);
             $totalfiltered = $totaldata;
         }
+
 
         $mahasiswa = $app->db->select('tbl_mahasiswa', [
             "[><]tbl_jurusan" => ["id_jurusan" => "jurusan_id"]
@@ -203,7 +211,7 @@ class DataController
         $jenis_kelamin = $reg['tambah_kelamin'];
         $kota = $reg['tambah_kota'];
         $jurusan = $reg['tambah_jurusan'];
-        
+
         $nama_db = $app->db->select('tbl_mahasiswa', '*', [
             'nama' => $nama
         ]);
@@ -211,13 +219,15 @@ class DataController
         // die();
         if ($nama_db == null) {
             $data = $app->db->insert(
-                'tbl_mahasiswa',[
+                'tbl_mahasiswa',
+                [
                     'nama' => $nama,
                     'jenis_kelamin' => $jenis_kelamin,
                     'kota' => $kota,
                     'id_jurusan' => $jurusan
-                ]);
-                // return var_dump($data);
+                ]
+            );
+            // return var_dump($data);
             $_SESSION['hasvalidate'] = true;
             return $rsp->withRedirect('/Data');
         } else {
